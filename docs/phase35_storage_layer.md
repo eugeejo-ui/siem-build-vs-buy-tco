@@ -141,6 +141,22 @@ Splunk 공식 문서 확인 결과, 클러스터의 복제는 **하나의 계수
 
 ---
 
+## 3.5 SmartStore–Dell ECS 접점 검증 (항목 H)
+
+선택지 확장(Splunk + SmartStore 오브젝트 티어링)과 Dell 타깃의 근거가 되는 벤더 접점을 Dell 공식 문서로 검증하였습니다.
+
+**확인 사실:** Dell은 Splunk SmartStore를 자사 ECS(Elastic Cloud Storage) 오브젝트 스토리지에 연결하는 공식 구성 가이드와 검증 설계(Validated Design)를 배포하고 있습니다. 문서에는 hot 데이터는 로컬 스토리지에 두고 warm·cold 데이터는 ECS 오브젝트 스토리지로 티어링하는 구조가 명시되어 있으며, ECS는 S3 호환 프로토콜로 SmartStore의 원격 저장소 역할을 합니다. 이로써 제안서 2.2절의 "두 회사가 벤더 문서 레벨에서 연결되어 있다"는 주장이 사실로 확인되었습니다.
+
+**복제 계수 논거와의 연결:** Dell 설계 문서는 저장 용량이 Kubernetes 복제 계수에 따라 계산된 사용량의 최대 3배까지 늘어날 수 있다고 명시합니다. 이는 앞의 3절에서 수정한 복제 계수 논거가 벤더 공식 문서에서도 확인되는 실제 고려사항임을 보여줍니다.
+
+**유의 사항(작업 원칙 8항 — 벤더 자료는 근거이자 편향원):**
+- 이 문서들은 Dell이 자사 제품 판매를 위해 만든 자료입니다. 접점의 존재 근거로는 신뢰도가 높으나, 그 안의 성능·비용 우위 주장은 별도 검증 대상입니다.
+- 확인된 검증 설계의 용례는 "IT 운영 예지정비"입니다. SmartStore+ECS 연결 자체는 용도와 무관하게 성립하나, 이를 "보안 로그 티어링"으로 확장할 때는 이 맥락 차이를 인지해야 합니다.
+- 제안서는 "ECS 및 PowerScale"로 병기했으나, 이번 검증에서 명확히 확인된 것은 **ECS**입니다. **PowerScale 연결은 미확인이며 별도 검증 대상**으로 분리합니다.
+- 일부 구성 문서가 구형 Splunk 버전(7.2.6 등)을 참조합니다. 아키텍처 개념은 유효하나 세부 파라미터는 최신 버전에서 달라질 수 있습니다.
+
+---
+
 ## 4. 미확정 사항
 
 | 항목 | 내용 | 대응 |
@@ -148,18 +164,21 @@ Splunk 공식 문서 확인 결과, 클러스터의 복제는 **하나의 계수
 | RF·SF 기본값 | Splunk 클러스터의 기본 RF·SF 값(흔히 RF=3, SF=2로 알려짐)은 본 검증에서 공식 문서로 확정하지 못함 | 모듈에서 RF·SF를 입력 변수로 두고, 기본값 확정 전까지는 사용자가 지정하도록 함. 기본값은 별도 검증 후 확정 |
 | frozen 사본 수 | 클러스터에서 frozen 아카이브가 몇 벌 보관되는지는 구성에 따라 다름 | frozen 복제 수를 별도 파라미터로 분리 |
 | 오브젝트 저장소 오버헤드 | 오브젝트 저장소 측에도 이레저 코딩 등 오버헤드가 존재하여 무손실이 아님 | 선택지 확장(Phase 3.5 후반) 설계 시 별도 계수로 반영 |
+| PowerScale 연결 | 제안서에 병기됐으나 이번 검증에서 미확인 | 별도 검증 대상. 확인 전까지 접점 근거는 ECS로 한정 |
 
 ---
 
 ## 5. 출처
 
-| 번호 | 출처 | 확인 내용 | 조회일 |
-|---|---|---|---|
-| 1 | Splunk 공식 문서, "Estimate your storage requirements" (Splunk Enterprise) | rawdata 15%, tsidx 35%, 합계 약 50% | 2026-09-02 |
-| 2 | Splunk 공식 문서, "Archive indexed data" (Splunk Enterprise) | frozen 아카이브 시 rawdata 외 파일 제거 (4.2+ 버전) | 2026-09-02 |
-| 3 | Splunk 공식 문서(클러스터 복제) 및 커뮤니티 확인 | RF는 rawdata, SF는 tsidx에 각각 적용 | 2026-09-02 |
+| 번호 | 출처 | 확인 내용 | URL | 조회일 |
+|---|---|---|---|---|
+| 1 | Splunk 공식 문서, "Estimate your storage requirements" | rawdata 15%, tsidx 35%, 합계 약 50% | https://help.splunk.com/en/splunk-enterprise/get-started/deployment-capacity-manual/10.4/hardware-capacity-planning/estimate-your-storage-requirements | 2026-09-02 |
+| 2 | Splunk 공식 문서, "Archive indexed data" | frozen 아카이브 시 rawdata 외 파일 제거 (4.2+ 버전) | https://help.splunk.com/en/splunk-enterprise/administer/manage-indexers-and-indexer-clusters/9.0/indexing-overview/back-up-and-archive-your-indexes/archive-indexed-data | 2026-09-02 |
+| 3 | Splunk 공식 문서/커뮤니티 (클러스터 복제) | RF는 rawdata, SF는 tsidx에 각각 적용 | https://community.splunk.com/t5/Knowledge-Management/Calculate-disk-storage-per-month/m-p/314042 | 2026-09-02 |
+| 4 | Dell 공식 문서, "Dell EMC ECS: Splunk SmartStore Configuration" (H17780) | ECS를 SmartStore 원격 저장소로 연결하는 구성 가이드, S3 프로토콜 | https://www.delltechnologies.com/asset/en-id/products/storage/technical-support/h17780_dell_emc_ecs_with_splunk_smartstore_configuration_guide.pdf | 2026-09-02 |
+| 5 | Dell 공식 문서, "Cloud Native Splunk Enterprise with SmartStore" 설계 가이드 (Info Hub) | hot=로컬, warm/cold=ECS 티어링 구조, 복제 계수에 따른 용량 최대 3배 | https://infohub.delltechnologies.com/en-us/l/design-guide-cloud-native-splunk-enterprise-with-smartstore-predictive-maintenance-for-it-operations/solution-concepts-3/ | 2026-09-02 |
 
-세 출처 모두 Splunk 공식 문서이며, 신뢰도 등급은 벤더 공식(제조사 자료)입니다. 제조사 자료이므로 성능·비용에 관한 주장은 별도 검증 대상으로 두되, 본 문서가 인용한 내용은 제품 동작에 관한 기술 사양이므로 편향 가능성이 낮은 항목에 해당합니다. 링크 원문은 `data/pricing.yaml` 등재 시 URL 필드에 함께 기록합니다.
+1~3번은 Splunk 공식 문서, 4~5번은 Dell 공식 문서이며, 신뢰도 등급은 모두 벤더 공식(제조사 자료)입니다. 제조사 자료이므로 성능·비용에 관한 주장은 별도 검증 대상으로 두되, 본 문서가 인용한 내용은 제품 동작·연결 구조에 관한 기술 사양이므로 편향 가능성이 낮은 항목에 해당합니다. 위 URL은 `data/pricing.yaml` 등재 시 출처 필드에 함께 기록합니다.
 
 ---
 
@@ -169,6 +188,7 @@ Splunk 공식 문서 확인 결과, 클러스터의 복제는 **하나의 계수
 |---|---|
 | 2026-09-02 | 스토리지 변환 계수(0.15 / 0.35 / 0.50 / frozen 0.15) Splunk 공식 문서로 검증 완료 |
 | 2026-09-02 | 기존 4.2절 RF 처리 방식(0.5 × RF)의 오류 확인. RF/SF 분리 방식으로 수정안 확정 및 기록 |
+| 2026-09-02 | 항목 H(SmartStore–Dell ECS 접점) Dell 공식 문서로 검증 완료(3.5절 신설). PowerScale은 미확인으로 분리 |
 
 ---
 

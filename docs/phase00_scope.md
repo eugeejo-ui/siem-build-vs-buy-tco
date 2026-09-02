@@ -168,10 +168,10 @@ Splunk의 국내 판매 가격은 공개되어 있지 않습니다. 이에 따�
 
 ## 7. 출처
 
-| 번호 | 출처 | 확인 내용 | 조회일 |
-|---|---|---|---|
-| 1 | Cisco Systems, Inc. Form 10-K (FY2025), SEC | Security 매출 80.94억 달러, 성장 59.5%, 총매출 566.54억 달러 | 2026-09-02 |
-| 2 | Cisco Form 8-K (2024-03-18) 및 Cisco 뉴스룸, "Cisco Completes Acquisition of Splunk" | 인수 완료일 2024-03-18, 주당 157달러 | 2026-09-02 |
+| 번호 | 출처 | 확인 내용 | URL | 조회일 |
+|---|---|---|---|---|
+| 1 | Cisco Systems, Inc. Form 10-K (FY2025), SEC | Security 매출 80.94억 달러, 성장 59.5%, 총매출 566.54억 달러 | https://www.sec.gov/Archives/edgar/data/858877/000085887725000111/csco-20250726.htm | 2026-09-02 |
+| 2 | Cisco Form 8-K (2024-03-18) 및 Cisco 뉴스룸, "Cisco Completes Acquisition of Splunk" | 인수 완료일 2024-03-18, 주당 157달러 | https://newsroom.cisco.com/c/r/newsroom/en/us/a/y2024/m03/cisco-completes-acquisition-of-splunk.html | 2026-09-02 |
 
 두 출처 모두 Cisco의 공식 SEC 공시 및 보도자료로, 신뢰도 등급은 최상위(공식 공시)입니다. 링크 원문은 `data/pricing.yaml` 등재 시 URL 필드에 함께 기록합니다.
 
