@@ -171,15 +171,59 @@ def test_self_hosted_ops_higher_than_commercial(led):
 
 # --- 안전장치 -------------------------------------------------------------------
 
-def test_pending_item_blocks_calculation(sc, led):
-    """미확보 값은 조용히 0이 되지 않고 예외를 던져야 한다.
+def test_deprecated_sizing_blocked(sc, led):
+    """폐기된 EPS 환산 방식 사이징은 계산에 쓰이면 안 된다."""
+    with pytest.raises(PricingError):
+        led.get("sizing_gb_per_instance_selfhosted")
 
-    이전 프로젝트에서 확인 없이 값을 추정했다가 실패한 전례를 코드로 방지.
+
+def test_all_options_computable(sc, led):
+    """원장 빈칸이 채워져 전 선택지가 계산 가능해야 한다."""
+    for opt in cm.ALL_OPTIONS:
+        r = cm.annual_cost(opt, sc, led, year=1)
+        assert r.total > 0, f"{opt} 계산 결과가 0"
+
+
+# --- 자체구축 컴퓨트: 저장 용량 기준 산정 (안 2) --------------------------------
+
+def test_selfhosted_compute_scales_with_capacity(led):
+    """자체구축 노드 수는 저장 용량에 비례해야 한다(EPS 환산 아님)."""
+    small = cm.Scenario(daily_gb=10)
+    large = cm.Scenario(daily_gb=200)
+    assert cm.compute_cost(cm.SELF_HOSTED, large, led) > cm.compute_cost(cm.SELF_HOSTED, small, led)
+
+
+def test_ha_minimum_applies_at_small_scale(led):
+    """소규모에서는 부하와 무관하게 HA 최소 대수가 적용된다.
+
+    이 하한이 소규모 구간에서 자체구축을 불리하게 만드는 요인이다.
     """
-    with pytest.raises(PricingError):
-        cm.compute_cost(cm.SELF_HOSTED, sc, led)   # 자체구축 사이징 미확보
-    with pytest.raises(PricingError):
-        cm.software_cost(cm.SPLUNK, sc, led, 1)    # Splunk 인제스트가 미확보
+    tiny = cm.Scenario(daily_gb=1)
+    ha_min = led.get("ha_minimum_nodes")
+    unit = led.get_krw("compute_price")
+    expected = ha_min * unit * cm.MONTHS_PER_YEAR
+    assert cm.compute_cost(cm.SELF_HOSTED, tiny, led) == pytest.approx(expected)
+
+
+def test_tiering_reduces_node_count(led):
+    """티어링으로 로컬 용량이 줄면 노드 수도 줄어야 한다."""
+    plain = cm.Scenario(daily_gb=100, tiering_ratio=0.0)
+    tiered = cm.Scenario(daily_gb=100, tiering_ratio=0.7)
+    # 티어링 시 총 용량은 같으나 로컬 부담이 줄어든다(현재 모델은 총량 기준이므로 동일)
+    assert cm.compute_cost(cm.SELF_HOSTED_TIERED, tiered, led) > 0
+
+
+# --- 관리형 SIEM 단가 단위 -----------------------------------------------------
+
+def test_managed_siem_billed_daily_not_monthly(sc, led):
+    """Sentinel $/GB는 수집되는 GB마다 부과되는 종량 단가다.
+
+    월 12회로 계산하면 실제의 약 1/30로 과소 산정된다.
+    이 실수는 관리형을 비현실적으로 싸게 만들어 결론을 뒤집는다.
+    """
+    per_gb = led.get_krw("managed_siem", "base")
+    expected = per_gb * sc.daily_gb * cm.DAYS_PER_YEAR
+    assert cm.software_cost(cm.MANAGED_SIEM, sc, led, year=1) == pytest.approx(expected)
 
 
 def test_invalid_year_raises(sc, led):

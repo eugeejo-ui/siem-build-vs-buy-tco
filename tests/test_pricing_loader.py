@@ -46,7 +46,7 @@ def test_known_keys_exist(led):
 def test_pending_item_raises(led):
     """pending 항목을 꺼내려 하면 예외가 나야 한다."""
     with pytest.raises(PricingError):
-        led.get("splunk_ingest")
+        led.get("datadog")   # 참고 비교군, 아직 미착수
 
 
 def test_deprecated_item_raises(led):
@@ -61,15 +61,18 @@ def test_missing_key_raises(led):
 
 
 def test_empty_which_raises(led):
-    """base가 비어 있는 범위형 항목은 base 조회 시 예외."""
+    """base를 의도적으로 비운 항목은 base 조회 시 예외.
+
+    편차가 커서 평균이 무의미한 항목(공시 비율 등)은 base를 두지 않는다.
+    """
     with pytest.raises(PricingError):
-        led.get("splunk_es_uplift", "base")  # low=50, high=100, base=None
+        led.get("security_staff_ratio", "base")  # low=1.5, high=7.1, base=None
 
 
 def test_range_item_low_high_ok(led):
     """base가 없어도 low/high는 꺼낼 수 있어야 한다."""
-    assert led.get("splunk_es_uplift", "low") == 50
-    assert led.get("splunk_es_uplift", "high") == 100
+    assert led.get("security_staff_ratio", "low") == 1.5
+    assert led.get("security_staff_ratio", "high") == 7.1
 
 
 # --- 검증된 값 고정 ----------------------------------------------------------
@@ -134,7 +137,9 @@ def test_blocked_items_reported(led):
     blocked = led.blocked_items()
     assert len(blocked) > 0
     keys = [b[0] for b in blocked]
-    assert "splunk_ingest" in keys
+    assert "datadog" in keys
+    # 폐기된 항목도 차단 목록에 포함되어야 한다
+    assert "sizing_gb_per_instance_selfhosted" in keys
 
 
 def test_confirmed_items_have_source_url(led):

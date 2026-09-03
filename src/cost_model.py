@@ -43,6 +43,7 @@ SPLUNK_FAMILY = {SPLUNK, SPLUNK_SMARTSTORE}
 SELF_HOSTED_FAMILY = {SELF_HOSTED, SELF_HOSTED_TIERED}
 
 MONTHS_PER_YEAR = 12
+DAYS_PER_YEAR = 365
 GB_PER_TB = 1000
 
 
@@ -143,8 +144,11 @@ def software_cost(option, sc: Scenario, led, year):
 
     if option == MANAGED_SIEM:
         # 해외 앵커 GB 단가 기준 (v2.3 확정: GB축으로 계산)
+        # [단위 주의] Sentinel의 $/GB는 "수집되는 GB마다" 부과되는 종량 단가다.
+        # 즉 하루 50GB를 수집하면 매일 50GB분이 과금되므로 연 365회 발생한다.
+        # 월 12회로 계산하면 실제의 1/30로 과소 산정된다.
         per_gb = led.get_krw("managed_siem", sc.which)
-        return per_gb * sc.daily_gb * MONTHS_PER_YEAR * escalation
+        return per_gb * sc.daily_gb * DAYS_PER_YEAR * escalation
 
     raise CostModelError(f"알 수 없는 선택지: {option}")
 
@@ -186,24 +190,34 @@ def storage_cost(option, sc: Scenario, led, capacity=None):
     return (hw_gb * ssd + cold_gb * hdd + frozen_gb * obj) * MONTHS_PER_YEAR
 
 
-def compute_cost(option, sc: Scenario, led):
+def compute_cost(option, sc: Scenario, led, capacity=None):
     """서버(컴퓨트) 비용 (KRW/년).
 
     필요 대수 = max(부하 기준 대수, HA 최소 대수).
     HA 하한이 있어 소규모 구간에서는 부하 대비 대수가 과하게 잡힌다.
     이것이 손익분기점을 왼쪽으로 미는 요인이다.
+
+    선택지별 산정 기준이 다르다.
+      Splunk 계열 : 처리량 기준 (인덱서당 GB/day)
+      자체구축     : 저장 용량 기준 (노드당 TB)
+        - EPS 환산(GB->EPS->GB)을 쓰지 않는다. 왕복 환산은 로그 소스 구성에 따라
+          결과를 30~50% 왜곡시키며, GB/day를 입력 변수로 둔 Phase 1 판단과도 충돌한다.
+        - Elastic 공식도 샤드를 적절히 사이징하면 샤드 수 한계보다 디스크가 먼저
+          바닥난다고 명시하여, 보관 워크로드에서는 용량이 노드 수를 결정한다.
     """
+    import math
+
     if option == MANAGED_SIEM:
         return 0.0
 
     if option in SPLUNK_FAMILY:
-        per_node = led.get("sizing_gb_per_instance_splunk_es", sc.which)
+        per_node_gb_day = led.get("sizing_gb_per_instance_splunk_es", sc.which)
+        load_nodes = math.ceil(sc.daily_gb / per_node_gb_day) if per_node_gb_day else 0
     else:
-        # 자체구축 사이징은 아직 미확보(pending) → loader가 예외를 던진다.
-        per_node = led.get("sizing_gb_per_instance_selfhosted", sc.which)
+        cap = capacity if capacity is not None else compute_capacity(option, sc)
+        per_node_tb = led.get("sizing_tb_per_node_selfhosted", sc.which)
+        load_nodes = math.ceil(cap.total_tb / per_node_tb) if per_node_tb else 0
 
-    import math
-    load_nodes = math.ceil(sc.daily_gb / per_node) if per_node else 0
     ha_min = led.get("ha_minimum_nodes", sc.which)
     nodes = max(load_nodes, ha_min)
 
@@ -284,7 +298,7 @@ def annual_cost(option, sc: Scenario, led, year):
         year=year,
         software=round(software_cost(option, sc, led, year), 2),
         storage=round(
-            storage_cost(option, sc, led, cap) + compute_cost(option, sc, led), 2
+            storage_cost(option, sc, led, cap) + compute_cost(option, sc, led, cap), 2
         ),
         build=round(build_cost(option, sc, led, year), 2),
         ops=round(ops_cost(option, sc, led), 2),
