@@ -75,6 +75,30 @@ def test_extra_target_fx_included(led):
     assert "usd_krw" not in sn.collect_targets(led, include_extra=False)
 
 
+def test_high_impact_item_survives_status_upgrade(led):
+    """상태가 격상되어도 영향이 큰 항목은 대상에서 빠지면 안 된다.
+
+    price_escalation_rate는 근거 확보로 unverified→partial이 되면서
+    sensitivity_targets() 자동 추출에서 제외되었으나,
+    손익분기점을 가장 크게 움직이는 항목이므로 EXTRA_TARGETS로 유지한다.
+    근거가 생긴 것과 결론을 흔드는 힘이 약해진 것은 별개다.
+    """
+    assert "price_escalation_rate" in sn.collect_targets(led)
+
+
+def test_escalation_rate_is_top_driver(led):
+    """가격 인상률이 상위 영향 항목이어야 한다.
+
+    5년 복리로 작용해 손익분기점을 크게 움직인다.
+    영향이 0이면 인상률이 계산에 반영되지 않는 버그다.
+    """
+    rows = sn.tornado(cm.SELF_HOSTED_TIERED, cm.MANAGED_SIEM, led)
+    row = next(r for r in rows if r.key == "price_escalation_rate")
+    assert row.swing > 10
+    # 인상률이 높을수록 상용이 비싸져 손익분기점이 낮아진다(자체구축 유리)
+    assert row.high_result < row.low_result
+
+
 def test_excluded_switch_not_in_targets(led):
     """0/1 스위치는 연속 분포로 흔들 수 없으므로 제외한다."""
     assert "smartstore_remote_full_search" not in sn.collect_targets(led)

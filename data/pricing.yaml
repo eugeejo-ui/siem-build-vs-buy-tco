@@ -130,17 +130,33 @@ common:
 
   price_escalation_rate:
     name: "소프트웨어 연간 가격 인상률"
-    low: 3
-    base: 6.5
-    high: 10
+    low: 6
+    base: 10
+    high: 15
     unit: "%/year"
     applies_to: [managed_siem, splunk, splunk_smartstore, datadog]
-    status: unverified
-    confidence: assumption
-    source: ""
-    source_url: ""
-    retrieved: ""
-    note: "이전 세션 가정값, 출처 미확보. 자체 구축에는 적용하지 않음. 검증 대상."
+    status: partial
+    confidence: thirdparty
+    source: >
+      복수 독립 출처가 8~12%대로 수렴:
+      SaaStr 분석 평균 8.7%(AI 도구는 10~25%), Appventory 평균 8.7%·전년比 11.4% 상승,
+      Renewly 약 12%(공격적 갱신 15~30%), BayTech 12.2%(G7 일반물가 2.5%의 약 5배).
+      Resubly SaaS Inflation Index는 "가격 상한 조항이 없는 계약은 갱신 시
+      8~12% 인상을 가정하는 것이 가장 안전"하다고 명시.
+      Zylo 2026 SaaS Management Index: IT 리더 79%가 최근 12개월 내 갱신 인상 경험.
+    source_url: "https://resubly.com/blog/saas-inflation-12-percent-2026/"
+    source_url_2: "https://zylo.com/blog/saas-pricing-trends"
+    source_url_3: "https://renewly.gg/blog/software-renewal-price-increases-2026"
+    retrieved: "2026-09-03"
+    note: >
+      [2026-09-03 상향 조정] 기존 3~10%(출처 미확보)는 시장 실측(8~12%)보다 낮아
+      소프트웨어 비용 상승을 과소 계상하고 있었다. 이는 상용 제품에 유리한 방향의
+      편향이므로 작업원칙 4항(불리한 결론도 숨기지 않음)에 따라 근거대로 상향.
+      low=6(가격 상한 조항이 있는 계약), base=10(8~12% 중앙), high=15(공격적 갱신 하한).
+      [한계] 출처가 모두 SaaS 비용관리 업체 자료로 자사 서비스 홍보 유인이 있어
+      confirmed로 격상하지 않는다. 또 "SaaS 일반"이지 "SIEM 구독" 전용 통계가 아니다.
+      [중요] 민감도 분석에서 손익분기점을 가장 크게 움직이는 항목(변동폭 42.5GB)으로 확인됨.
+      자체 구축에는 적용하지 않는다(오픈소스는 라이선스료가 없음).
 
 # -----------------------------------------------------------------------------
 # 3. 저장 계수 (Phase 3.5 신설 예정 — 현재 미검증)

@@ -46,8 +46,17 @@ NO_CROSSING = None
 # 기본 시뮬레이션 횟수
 DEFAULT_TRIALS = 2000
 
-# 환율은 confirmed이지만 범위가 넓고 계약 기간 내내 복리로 작용하므로 포함한다.
-EXTRA_TARGETS = ["usd_krw"]
+# 상태와 무관하게 민감도 분석에 포함할 항목.
+#
+# [설계 주의] sensitivity_targets()는 assumed/unverified 상태만 자동 추출한다.
+# 그런데 근거가 생겨 상태가 격상되면(unverified → partial) 목록에서 빠져버린다.
+# 근거가 생긴 것과 결론을 흔드는 힘이 약해진 것은 별개이므로,
+# 영향이 큰 것으로 확인된 항목은 상태와 무관하게 여기에 명시해 유지한다.
+#
+#   usd_krw               범위가 넓고 계약 기간 내내 복리로 작용
+#   price_escalation_rate 손익분기점을 가장 크게 움직이는 항목으로 확인됨(변동폭 42.5GB).
+#                         2026-09-03 근거 확보로 partial 격상되었으나 영향력은 그대로다.
+EXTRA_TARGETS = ["usd_krw", "price_escalation_rate"]
 
 # 흔들면 의미가 없거나 계산이 깨지는 항목은 제외한다.
 EXCLUDED_TARGETS = {
