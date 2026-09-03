@@ -170,6 +170,25 @@ storage_factor:
     retrieved: "2026-09-02"
     note: "색인(tsidx) 제거, rawdata만 보관."
 
+  elastic_overhead:
+    name: "자체구축(Elastic/Wazuh) 저장 오버헤드 계수"
+    low: null
+    base: 1.15
+    high: null
+    unit: "ratio"
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: confirmed
+    confidence: vendor
+    source: >
+      Elasticsearch 사이징 공식: 총용량 = 일일량 × 보존일 × (1+복제본) × 1.15.
+      1.15는 Lucene 인덱스 구조(1.1~1.2)와 translog(1.05) 오버헤드의 합.
+    source_url: "https://www.elastic.co/docs/deploy-manage/production-guidance/general-sizing"
+    retrieved: "2026-09-03"
+    note: >
+      [경로 분리 필수] Splunk 계수(0.15/0.35)와 계산 체계가 정반대이므로 혼용 금지.
+      Splunk는 압축돼 원본보다 작아지고(0.5배), Elastic은 오버헤드가 붙어 커진다(1.15배).
+      src/storage_model.py의 compute_storage_elastic()로 별도 구현. 작업원칙 10항.
+
   replication_factor:
     name: "복제 계수 (RF) — rawdata에 적용"
     low: 1
@@ -288,16 +307,52 @@ software:
 
   managed_siem:
     name: "관리형 SIEM 서비스 요금"
-    low: null
+    low: 2.96
     base: null
-    high: null
-    unit: "USD/GB-day/year"
+    high: 5.59
+    unit: "USD/GB (해외 앵커)"
     applies_to: [managed_siem]
-    status: pending
+    status: partial
     confidence: derived
-    source: ""
-    retrieved: ""
-    note: "국내 MSSP 대부분 비공개. 나라장터 공공 입찰 계약 단가를 공개 앵커 후보로 검토."
+    source: >
+      [해외 앵커] MS Sentinel은 주요 SIEM 중 가격을 공개하는 거의 유일한 벤더.
+      PAYG $4.30(US East)~$5.59(US West), 100GB/day 약정 $2.96, 50,000GB/day $2.05.
+      90일 초과 보관 $0.10/GB/월. 데이터레이크 수집 $0.05/GB, 저장 $0.026/GB/월.
+      [참고] Splunk 약 $1,000/GB/년(50GB 구간), Elastic $0.55~1.10/GB (제3자 추정).
+    source_url: "https://siemcostcalculator.com/sentinel-pricing"
+    source_url_2: "https://realm.security/siem-pricing-2026-leading-siem-providers-compared/"
+    retrieved: "2026-09-03"
+    note: >
+      [국내가 확보 불가 확정 → 역산 전환]
+      나라장터 보안관제 제안요청서 5건(대검찰청·한국은행·KLID·보건복지부·울산과기원) 전수 확인 결과
+      GB/EPS 등 데이터 볼륨 지표가 전무. 원인은 두 가지.
+      (1) 「행정기관 및 공공기관 정보시스템 구축·운영 지침」 제17조에 따라 시스템 현황이 비공개.
+          제안요청서에 해당 절은 존재하나 "보안상 생략, 방문·보안서약서 제출 후 열람 가능"으로 대체됨.
+      (2) 국내 계약 단위가 GB가 아니라 인력(명). managed_siem_kr_per_person 항목 참조.
+      따라서 위 해외 앵커를 기준으로 "국내가가 GB당 얼마 이하이면 자체구축보다 유리한가" 형태로 역산한다.
+
+  managed_siem_kr_per_person:
+    name: "국내 보안관제 위탁 1인당 연 계약단가 (실측)"
+    low: 93000000
+    base: null
+    high: 145000000
+    unit: "KRW/person-year"
+    applies_to: [managed_siem]
+    status: confirmed
+    confidence: official
+    source: >
+      나라장터 입찰공고 제안요청서 실측(2026년 공고 기준).
+      대검찰청 검찰사이버안전센터: 13명(기획1·침해대응분석4·보안관제8), 연 12.1억 → 1인당 약 9,300만원.
+      한국은행 정보시스템 보안관제: 최소 26명, 4년 150.7억(연 37.7억) → 1인당 약 1억 4,500만원.
+    source_url: "https://www.g2b.go.kr/"
+    source_url_2: "https://www.g2b.go.kr/ (공고번호 R26BK01378286-000 대검찰청 / R26BK01336541-000 한국은행)"
+    retrieved: "2026-09-03"
+    note: >
+      [중요] 이 범위(9,300만~1억 4,500만원)는 Phase 1의 SW산업협회 인건비 범위
+      (9,301만~1억 2,177만원)와 거의 정확히 겹쳐, 공시 통계값이 실계약으로 교차검증됨.
+      부수 확인: 24시간 365일 관제에 8명 필요(3교대+휴무 커버).
+      전 건이 보안관제전문업체(6526) 등록 업체만 입찰 가능 → 시장 진입장벽. Phase 7 등재 대상.
+      단, 공공기관 계약이라 민간 중견기업 단가와 차이 가능. 대리지표로만 사용.
 
   datadog:
     name: "Datadog 요금 (참고 비교군)"
