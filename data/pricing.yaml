@@ -33,15 +33,22 @@ meta:
 fx:
   usd_krw:
     name: "원/달러 환율"
-    low: null
-    base: null
-    high: null
+    low: 1360
+    base: 1370
+    high: 1480
     unit: "KRW/USD"
-    status: pending
-    confidence: assumption
-    source: ""
-    retrieved: ""
-    note: "조회일 기준값을 base로 기입. 민감도 범위는 ±10%로 설정."
+    status: confirmed
+    confidence: thirdparty
+    source: >
+      2026-09-03 기준 USD/KRW 약 1,363~1,373. 52주 범위 1,361.92~1,562.47.
+      2025년 12월 월평균 1,470원대(외환위기 이후 최고 수준) 기록.
+    source_url: "https://kr.investing.com/currencies/usd-krw"
+    source_url_2: "https://kbthink.com/investment/issues/2026-krw-usd-outlook.html"
+    retrieved: "2026-09-03"
+    note: >
+      [민감도 필수] 클라우드·SIEM 단가 대부분이 USD라 환율이 결론에 직접 영향.
+      low=최근 저점권, base=조회일 시세, high=2025년 말 고점권.
+      3~5년 계약 기간 중 변동하므로 단일값 사용 금지.
 
 # -----------------------------------------------------------------------------
 # 1. 조직 프로파일 (Phase 1 확정분)
