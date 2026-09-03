@@ -146,6 +146,62 @@ def test_confirmed_items_have_source_url(led):
     assert missing == [], f"출처 URL 없는 confirmed 항목: {missing}"
 
 
+# --- 공수 가정값 (안 C: 범위 가정 + 민감도) ----------------------------------
+
+EFFORT_KEYS = [
+    "build_effort_initial",
+    "build_effort_learning",
+    "build_effort_detection_rules",
+    "ops_effort_daily",
+    "ops_effort_isms",
+]
+
+
+def test_all_effort_items_filled(led):
+    """공수 5건이 모두 채워져 계산 가능해야 한다."""
+    for k in EFFORT_KEYS:
+        assert led.get(k, "base") is not None
+
+
+def test_effort_items_have_ranges(led):
+    """가정값이므로 반드시 low < base < high 범위를 가져야 한다.
+
+    단일값으로 확정하면 근거 없는 수치가 확정된 것처럼 보이게 된다.
+    """
+    for k in EFFORT_KEYS:
+        lo = led.get(k, "low")
+        base = led.get(k, "base")
+        hi = led.get(k, "high")
+        assert lo < base < hi, f"{k}: 범위가 올바르지 않음 ({lo}/{base}/{hi})"
+
+
+def test_assumed_items_are_flagged_for_sensitivity(led):
+    """근거 없는 가정값은 민감도 분석 대상으로 자동 잡혀야 한다."""
+    targets = [t[0] for t in led.sensitivity_targets()]
+    for k in ["build_effort_initial", "build_effort_learning",
+              "build_effort_detection_rules", "ops_effort_isms"]:
+        assert k in targets, f"{k}가 민감도 대상에서 누락됨"
+
+
+def test_detection_rules_has_widest_range(led):
+    """탐지룰 공수는 근거가 전무하므로 범위가 가장 넓어야 한다.
+
+    근거가 없을수록 넓게 잡는다는 원칙이 값에 반영되어 있는지 확인.
+    """
+    def spread(k):
+        return led.get(k, "high") / led.get(k, "low")
+
+    assert spread("build_effort_detection_rules") >= spread("build_effort_initial")
+    assert spread("build_effort_detection_rules") >= spread("build_effort_learning")
+
+
+def test_ops_daily_has_source(led):
+    """일상 운영 공수는 5건 중 유일하게 간접 근거가 있어야 한다."""
+    it = led.item("ops_effort_daily")
+    assert it.source_url, "ops_effort_daily는 출처가 있어야 함"
+    assert it.status == "partial"
+
+
 if __name__ == "__main__":
     import sys
     sys.exit(pytest.main([__file__, "-v"]))

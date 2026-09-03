@@ -20,9 +20,15 @@ import yaml
 
 
 # 계산에 사용해도 되는 상태
-USABLE_STATUS = {"confirmed", "partial", "unverified"}
+#   confirmed  : 1차 출처로 검증됨
+#   partial    : 일부만 확인됨
+#   unverified : 값은 있으나 출처 미확보
+#   assumed    : 근거 없는 범위 가정 (민감도 분석 필수)
+USABLE_STATUS = {"confirmed", "partial", "unverified", "assumed"}
 # 계산에 사용하면 안 되는 상태
 BLOCKED_STATUS = {"pending", "blank", "deprecated"}
+# 근거가 약해 민감도 분석이 반드시 필요한 상태
+NEEDS_SENSITIVITY = {"assumed", "unverified"}
 
 
 class PricingError(Exception):
@@ -128,6 +134,15 @@ class PricingLedger:
         return [(k, i.name) for k, i in self._items.items()
                 if i.status in ("confirmed", "partial") and not i.source_url]
 
+    def sensitivity_targets(self):
+        """근거가 약해 민감도 분석이 반드시 필요한 항목.
+
+        Phase 6에서 이 목록을 그대로 분석 대상으로 삼는다.
+        가정값이 결론을 좌우하는지 확인하지 않으면 분석 전체가 무의미해진다.
+        """
+        return [(k, i.name, i.status) for k, i in self._items.items()
+                if i.status in NEEDS_SENSITIVITY]
+
     def keys(self):
         return sorted(self._items.keys())
 
@@ -156,6 +171,10 @@ if __name__ == "__main__":
         print(f"  - {k}: {name}")
     if not ms:
         print("  없음")
+
+    print("\n[민감도 분석 필수 대상 — 근거 약함]")
+    for k, name, st in led.sensitivity_targets():
+        print(f"  - {k:38s} {st:10s} {name}")
 
     print("\n[샘플 조회]")
     print("  환율(base):", led.get("usd_krw"))

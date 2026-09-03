@@ -567,66 +567,102 @@ labor:
 
   build_effort_initial:
     name: "초기 구축 투입 공수"
-    low: null
-    base: null
-    high: null
+    low: 2
+    base: 4
+    high: 8
     unit: "person-month"
     applies_to: [self_hosted, self_hosted_tiered]
-    status: pending
+    status: assumed
     confidence: assumption
-    source: ""
-    retrieved: ""
-    note: "1회성."
+    source: "표준 공수 기준 부재. 범위 가정(Phase 4 착수용)"
+    source_url: ""
+    retrieved: "2026-09-03"
+    note: >
+      [가정값 — 검증된 수치가 아님] 1회성.
+      서버·클러스터 구성, 로그 수집기 연결, 대시보드 구축까지의 공수.
+      low=단일 노드 최소 구성, base=중견 규모 클러스터, high=HA 3노드 + 다수 로그소스.
+      상용 구매 시 벤더가 상당 부분 수행하므로 자체 구축에만 적용.
+      범위 폭을 4배(2~8)로 넓게 잡은 이유: 조직 역량·로그소스 수에 따라 편차가 크고,
+      근거가 없으므로 좁게 잡으면 정확한 것처럼 오인될 수 있음. 민감도 분석 필수 대상.
 
   build_effort_learning:
     name: "학습곡선 공수"
-    low: null
-    base: null
-    high: null
+    low: 1
+    base: 3
+    high: 6
     unit: "person-month"
     applies_to: [self_hosted, self_hosted_tiered]
-    status: pending
+    status: assumed
     confidence: assumption
-    source: ""
-    retrieved: ""
-    note: "1회성."
+    source: >
+      표준 공수 기준 부재. 범위 가정.
+      [간접 근거] Elasticsearch를 운영 가능한 수준으로 다루는 엔지니어는
+      일반 SRE 대비 30~50% 높은 몸값을 요구한다는 시장 관찰이 존재하며,
+      이는 습득 난이도가 실재함을 시사(단, 공수로의 환산은 논리적 비약이므로 가정으로 처리).
+    source_url: "https://siemcostcalculator.com/elastic-siem-pricing"
+    retrieved: "2026-09-03"
+    note: >
+      [가정값 — 검증된 수치가 아님] 1회성.
+      담당자가 샤드 튜닝·롤오버 정책·장애 디버깅을 수행할 수 있게 되기까지의 저생산 기간.
+      low=유경험자 보유, base=일반적 IT 인력, high=보안·검색엔진 경험 전무.
+      민감도 분석 대상.
 
   build_effort_detection_rules:
     name: "탐지룰 개발 공수"
-    low: null
-    base: null
-    high: null
+    low: 3
+    base: 9
+    high: 18
     unit: "person-month"
     applies_to: [self_hosted, self_hosted_tiered]
-    status: pending
+    status: assumed
     confidence: assumption
-    source: ""
-    retrieved: ""
+    source: "근거 없음. 순수 범위 가정."
+    source_url: ""
+    retrieved: "2026-09-03"
     note: >
-      상용은 벤더가 탐지룰을 제공하나 자체 구축은 직접 개발해야 함.
-      금액으로 환산되지 않는 부분(탐지 품질·실효성 확보 기간)은 Phase 7에서 별도 처리.
-      표준 공수 기준이 존재하지 않아 범위 가정 + 민감도 처리 대상.
+      [가정값 — 근거 전무. 민감도 분석 최우선 대상]
+      상용은 벤더가 축적한 탐지룰을 제공하나 자체 구축은 직접 개발해야 함.
+      본 항목은 5개 공수 중 유일하게 간접 근거조차 없으므로, 결론이 이 값에 얼마나
+      민감한지를 Phase 6에서 가장 먼저 확인해야 함.
+      범위를 6배(3~18)로 가장 넓게 잡은 이유가 이것.
+      탐지 품질·실효성 확보 기간 등 금액으로 환산되지 않는 측면은 Phase 7에서 정성적으로 별도 서술.
 
   ops_effort_daily:
-    name: "일상 운영 공수"
-    low: null
-    base: null
-    high: null
+    name: "일상 운영 공수 (자체 구축)"
+    low: 0.2
+    base: 0.25
+    high: 0.3
     unit: "FTE"
-    status: pending
-    confidence: assumption
-    source: ""
-    retrieved: ""
-    note: "선택지별로 다르게 설정. 외주 비중(organization.outsourcing_ratio) 반영 필요."
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: partial
+    confidence: thirdparty
+    source: >
+      Elastic 자체 운영 시 담당 엔지니어 업무 시간의 20~30%가 클러스터 운영
+      (샤드 관리, 버전 업그레이드, 장애 대응)에 소요된다는 제3자 분석.
+    source_url: "https://siemcostcalculator.com/elastic-siem-pricing"
+    retrieved: "2026-09-03"
+    note: >
+      [5개 공수 중 유일하게 간접 근거 확보] 매년 반복 발생.
+      단, 이 수치는 "클러스터 운영"에 한정된 값이며 알람 분석·오탐 처리 등
+      보안 관제 업무는 별도. 24시간 관제가 필요한 경우 나라장터 실측 기준
+      8명(3교대+휴무)이 별도로 필요하므로 혼동 금지.
+      외주 비중(organization.outsourcing_ratio) 반영 시 인건비→용역비로 성격 전환.
 
   ops_effort_isms:
     name: "ISMS 심사 대응 공수"
-    low: null
-    base: null
-    high: null
+    low: 0.5
+    base: 1.5
+    high: 3
     unit: "person-month/year"
-    status: pending
+    status: assumed
     confidence: assumption
-    source: ""
-    retrieved: ""
-    note: "국내 규제 특화 항목. 해외 TCO 자료에 존재하지 않음."
+    source: "표준 공수 기준 부재. 범위 가정."
+    source_url: ""
+    retrieved: "2026-09-03"
+    note: >
+      [가정값 — 검증된 수치가 아님] 매년 반복 발생.
+      국내 규제 특화 항목으로 해외 TCO 자료에는 존재하지 않는 칸.
+      ISMS/ISMS-P 심사 대응 자료 준비, 증빙 추출, 접속기록 정기점검 등.
+      low=인증 유지(갱신년 아님), base=일반적 연간 부담, high=최초 취득 또는 갱신 심사년.
+      상용 제품은 리포팅 기능으로 증빙 추출이 자동화되는 경우가 많아 자체 구축 대비 유리하나,
+      그 차이를 정량화할 근거가 없으므로 양 진영에 동일 범위를 적용하고 민감도로 처리.
