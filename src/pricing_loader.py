@@ -99,6 +99,47 @@ class PricingLedger:
             raise PricingError(f"원장에 '{key}' 항목이 없습니다.")
         return self._items[key]
 
+    # --- 민감도 분석용 오버라이드 -------------------------------------------
+
+    def with_override(self, key, which):
+        """특정 항목만 다른 시나리오 값으로 바꾼 사본을 만든다.
+
+        단변수 민감도(tornado)는 "한 항목만 흔들고 나머지는 base 고정"이므로
+        이 기능이 없으면 which='low'가 모든 항목을 동시에 바꿔버려
+        어느 항목이 결론을 움직였는지 분리할 수 없다.
+        """
+        import copy
+        clone = copy.copy(self)
+        clone._items = dict(self._items)
+        src = self.item(key)
+        new_val = getattr(src, which)
+        if new_val is None:
+            raise PricingError(f"[{key}] '{which}' 값이 비어 오버라이드할 수 없습니다.")
+        replaced = copy.copy(src)
+        replaced.low = new_val
+        replaced.base = new_val
+        replaced.high = new_val
+        clone._items[key] = replaced
+        return clone
+
+    def with_values(self, mapping):
+        """여러 항목을 지정한 값으로 한 번에 바꾼 사본을 만든다.
+
+        몬테카를로 시뮬레이션에서 매 시행마다 여러 항목을 동시에
+        무작위 값으로 설정할 때 사용한다.
+        """
+        import copy
+        clone = copy.copy(self)
+        clone._items = dict(self._items)
+        for key, val in mapping.items():
+            src = self.item(key)
+            replaced = copy.copy(src)
+            replaced.low = val
+            replaced.base = val
+            replaced.high = val
+            clone._items[key] = replaced
+        return clone
+
     def get(self, key, which="base", allow_blocked=False):
         """값을 꺼낸다. 사용 불가 상태면 예외를 던진다."""
         it = self.item(key)
