@@ -39,8 +39,36 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 # --- 폰트 --------------------------------------------------------------------
 # 한글이 깨지면 차트가 무용지물이 되므로 폰트를 명시적으로 지정한다.
-KO_FONT = "Noto Sans CJK JP"   # CJK 통합 폰트로 한글 포함
+#
+# [환경 독립성] 하나의 폰트만 지정하면 그 폰트가 없는 환경에서 글자가 네모(□)로
+# 깨진다. 실제로 Noto 폰트가 없는 로컬에서 실행했을 때 이 문제가 발생했다.
+# 그래서 한글 폰트 후보를 우선순위대로 나열하고, 설치된 것 중 첫 번째를 쓴다.
+#   - Malgun Gothic : Windows 기본 (로컬 실행 대비)
+#   - AppleGothic   : macOS 기본
+#   - Noto Sans CJK : Linux/CI 환경
+#   - NanumGothic   : 리눅스에서 흔히 설치되는 한글 폰트
+import matplotlib.font_manager as fm
+
+KO_FONT_CANDIDATES = [
+    "Malgun Gothic", "AppleGothic",
+    "Noto Sans CJK KR", "Noto Sans CJK JP", "Noto Sans KR",
+    "NanumGothic", "NanumBarunGothic", "UnDotum",
+]
 EN_FONT = "DejaVu Sans"
+
+
+def _resolve_ko_font():
+    """설치된 폰트 중 첫 번째 한글 폰트를 찾는다. 없으면 경고하고 기본값 사용."""
+    installed = {f.name for f in fm.fontManager.ttflist}
+    for name in KO_FONT_CANDIDATES:
+        if name in installed:
+            return name
+    print("  [경고] 한글 폰트를 찾지 못했습니다. 한글이 깨질 수 있습니다.")
+    print(f"         시도한 후보: {', '.join(KO_FONT_CANDIDATES)}")
+    return EN_FONT
+
+
+KO_FONT = _resolve_ko_font()
 
 plt.rcParams["axes.unicode_minus"] = False
 plt.rcParams["figure.dpi"] = 110
