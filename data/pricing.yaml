@@ -314,72 +314,83 @@ storage:
 
   ssd_price:
     name: "고성능 SSD 단가 (hot/warm 계층)"
-    low: null
-    base: null
-    high: null
+    low: 0.0912
+    base: 0.0912
+    high: 0.1278
     unit: "USD/GB/month"
     applies_to: [self_hosted, self_hosted_tiered, splunk, splunk_smartstore]
-    status: pending
+    status: confirmed
     confidence: vendor
-    source: ""
-    retrieved: ""
-    note: "서울 리전 기준으로 통일. 개인정보 국내 보관 요건과 연계."
+    source: "AWS EBS 서울 리전(ap-northeast-2): gp3 $0.0912, io2 $0.1278"
+    source_url: "https://aws-pricing.com/ap-northeast-2.html"
+    retrieved: "2026-09-03"
+    note: "base=gp3(범용 SSD), high=io2(고IOPS). 서울 리전 실측."
 
   hdd_price:
     name: "일반 디스크 단가 (cold 계층)"
-    low: null
-    base: null
-    high: null
+    low: 0.0174
+    base: 0.0174
+    high: 0.051
     unit: "USD/GB/month"
     applies_to: [self_hosted, self_hosted_tiered]
-    status: pending
+    status: confirmed
     confidence: vendor
-    source: ""
-    retrieved: ""
-    note: ""
+    source: "AWS EBS 서울 리전: sc1(Cold HDD) $0.0174, st1(처리량최적화 HDD) $0.051"
+    source_url: "https://aws-pricing.com/ap-northeast-2.html"
+    retrieved: "2026-09-03"
+    note: "base=sc1(최저), high=st1. 검색 성능이 필요하면 st1, 순수 보관이면 sc1."
 
   object_price:
     name: "오브젝트 스토리지 단가 (frozen/archive 계층)"
-    low: null
-    base: null
-    high: null
+    low: 0.002
+    base: 0.025
+    high: 0.025
     unit: "USD/GB/month"
     applies_to: [self_hosted_tiered, splunk_smartstore]
-    status: pending
+    status: confirmed
     confidence: vendor
-    source: ""
-    retrieved: ""
+    source: "AWS S3 서울 리전(ap-northeast-2): Standard $0.025(처음 50TB), Standard-IA $0.0138, Glacier Deep Archive $0.002"
+    source_url: "https://aws.amazon.com/s3/pricing/"
+    retrieved: "2026-09-03"
     note: >
-      S3 호환 및 Dell ECS 기준. 최저가 계층을 그대로 가정하지 말 것.
-      ISMS 심사 시 조회 요구가 발생하면 인출 비용과 지연이 추가됨.
-      [접점 검증 완료] Dell이 SmartStore를 ECS에 연결하는 공식 구성가이드·검증설계 배포 확인
-      (H17780 / Info Hub). PowerScale 연결은 미확인. 상세 phase35 3.5절.
+      서울 리전 실측 확정. base=S3 Standard($0.025), low=Glacier Deep Archive($0.002).
+      티어링 warm/cold 후보: Standard-IA $0.0138, Glacier Instant Retrieval $0.005.
+      us-east-1($0.023) 대비 서울이 약 8.7% 높음(프리미엄 실측 확인).
+      SmartStore warm 티어는 통상 Standard 또는 Standard-IA 사용.
 
   retrieval_price:
     name: "아카이브 인출 요금"
-    low: null
-    base: null
-    high: null
+    low: 0.005
+    base: 0.022
+    high: 0.033
     unit: "USD/GB"
     applies_to: [self_hosted_tiered, splunk_smartstore]
-    status: pending
+    status: confirmed
     confidence: vendor
-    source: ""
-    retrieved: ""
-    note: "연간 조회 횟수 가정과 함께 사용."
+    source: "AWS S3 서울: Glacier Deep Archive 표준 $0.022/대량 $0.005, Glacier Instant $0.03, Standard-IA $0.01"
+    source_url: "https://aws.amazon.com/s3/pricing/"
+    retrieved: "2026-09-03"
+    note: >
+      서울 리전 실측. base=Deep Archive 표준 인출($0.022/GB), low=Deep Archive 대량($0.005), high=Glacier Instant($0.03).
+      ISMS 조회 요구 시 이 인출료가 발생 → Phase 7 정량화 불가 요인과 연계.
+      Deep Archive는 180일·Glacier는 90일 최소보관 있어 잦은 조회 시 불리.
+      연간 조회 빈도 가정과 함께 사용."
 
   compute_price:
     name: "컴퓨트(서버) 단가"
-    low: null
-    base: null
-    high: null
+    low: 172.28
+    base: 344.56
+    high: 689.12
     unit: "USD/instance/month"
     applies_to: [self_hosted, self_hosted_tiered]
-    status: pending
+    status: partial
     confidence: vendor
-    source: ""
-    retrieved: ""
-    note: "GB/day당 필요 사양 산정 근거(Elastic·Wazuh 공식 사이징 문서) 확보 후 대입."
+    source: "AWS EC2 서울 리전 온디맨드: m6i.xlarge $172.28, m6i.2xlarge $344.56, m6i.4xlarge $689.12"
+    source_url: "https://aws-pricing.com/ap-northeast-2.html"
+    retrieved: "2026-09-03"
+    note: >
+      [부분 확인] 대표 m6i 계열 실측(서울, 온디맨드 월). 1년/3년 약정 시 30~50% 저렴.
+      실제 필요 대수는 sizing_gb_per_instance(미착수)가 정해져야 산출 가능.
 
   sizing_gb_per_instance:
     name: "인스턴스 1대당 처리 가능 로그량"
