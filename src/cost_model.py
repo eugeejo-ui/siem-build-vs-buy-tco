@@ -66,6 +66,7 @@ class Scenario:
     tiering_ratio: float = 0.0          # 자체구축 오브젝트 티어링 비율
     outsourcing_ratio: float = 0.0      # 외주 비중 (0~1)
     isms_enabled: bool = True           # ISMS 대응 공수 포함 여부
+    smartstore_full_search: bool = False  # SmartStore 원격 전 기간 검색 가능 유지
 
     @property
     def frozen_days(self):
@@ -112,6 +113,7 @@ def compute_capacity(option, sc: Scenario, led=None):
             replication=sm.ReplicationPolicy(rf=sc.rf, sf=sc.sf),
             cache_days=int(cache_days),
             local_replication=int(local_rep),
+            full_search_retention=sc.smartstore_full_search,
         )
     if option in SPLUNK_FAMILY:
         return sm.compute_storage(

@@ -159,26 +159,67 @@ def test_smartstore_shifts_volume_to_remote(led):
     assert cap.frozen_tb > cap.hot_warm_tb * 5
 
 
-def test_known_limitation_smartstore_retains_searchable_remote(led):
-    """[알려진 한계·해석 주의] SmartStore 총비용이 일반 Splunk보다 높게 나온다.
+def test_smartstore_follows_standard_lifecycle_by_default(led):
+    """기본값에서 SmartStore도 표준 수명주기(frozen 0.15)를 따라야 한다.
 
-    버그가 아니라 비교 조건의 비대칭 때문이다.
-      일반 Splunk : frozen 구간에서 tsidx를 버려(0.15 계수) 용량이 작지만
-                    그 데이터는 검색이 불가능하다.
-      SmartStore  : 전 보존기간을 검색 가능 상태(0.50 계수)로 원격 보관한다.
-
-    즉 두 선택지가 제공하는 "검색 가능 데이터 범위"가 다르므로
-    총액만 비교하면 SmartStore가 불리해 보인다.
-    Phase 8 서술 시 이 비대칭을 반드시 명시해야 하며,
-    동등 비교를 원하면 일반 Splunk의 frozen 구간을 검색 대상에서 제외하거나
-    SmartStore의 원격 보관 범위를 줄여 맞춰야 한다.
+    SmartStore가 바꾸는 것은 warm 버킷의 저장 위치이지 frozen 정책이 아니다.
+    frozen을 빠뜨리면 원격 용량이 과대 계산되어 SmartStore가 부당하게 불리해진다.
     """
     sc = cm.Scenario(daily_gb=50, years=5, which="base")
-    plain = cm.compute_capacity(cm.SPLUNK, sc, led)
     ss = cm.compute_capacity(cm.SPLUNK_SMARTSTORE, sc, led)
-    plain_searchable = plain.hot_warm_tb + plain.cold_tb
-    ss_searchable = ss.hot_warm_tb + ss.frozen_tb
-    assert ss_searchable > plain_searchable, "검색 가능 범위 비대칭이 해소됨 — 테스트 갱신 필요"
+    plain = cm.compute_capacity(cm.SPLUNK, sc, led)
+    # 총 용량이 일반 Splunk와 같은 자릿수여야 한다(2배 이내)
+    assert ss.total_tb < plain.total_tb * 2
+
+
+def test_full_search_option_increases_remote_volume(led):
+    """전 기간 검색 옵션을 켜면 원격 용량이 크게 늘어야 한다."""
+    base = cm.Scenario(daily_gb=50, years=5, which="base")
+    full = cm.Scenario(daily_gb=50, years=5, which="base",
+                       smartstore_full_search=True)
+    cap_base = cm.compute_capacity(cm.SPLUNK_SMARTSTORE, base, led)
+    cap_full = cm.compute_capacity(cm.SPLUNK_SMARTSTORE, full, led)
+    assert cap_full.frozen_tb > cap_base.frozen_tb * 2
+
+
+def test_full_search_option_costs_more(led):
+    """전 기간 검색 옵션은 비용이 더 들어야 한다.
+
+    공짜로 기능이 늘어나면 계산이 잘못된 것이다.
+    """
+    base = cm.Scenario(daily_gb=50, years=5, which="base")
+    full = cm.Scenario(daily_gb=50, years=5, which="base",
+                       smartstore_full_search=True)
+    assert (te.compute_tco(cm.SPLUNK_SMARTSTORE, full, led).total
+            > te.compute_tco(cm.SPLUNK_SMARTSTORE, base, led).total)
+
+
+def test_smartstore_storage_cheaper_than_plain(led):
+    """저장 비용만 놓고 보면 SmartStore가 일반 Splunk보다 저렴해야 한다.
+
+    로컬 고성능 디스크 부담이 줄기 때문이며, 이것이 Dell ECS 접점의 근거다.
+    총액에서는 라이선스 비중이 커 이 차이가 묻히므로 저장 항목만 분리해 검증한다.
+    """
+    sc = cm.Scenario(daily_gb=50, years=5, which="base")
+    plain_cap = cm.compute_capacity(cm.SPLUNK, sc, led)
+    ss_cap = cm.compute_capacity(cm.SPLUNK_SMARTSTORE, sc, led)
+    plain = cm.storage_cost(cm.SPLUNK, sc, led, plain_cap)
+    ss = cm.storage_cost(cm.SPLUNK_SMARTSTORE, sc, led, ss_cap)
+    assert ss < plain
+
+
+def test_known_limitation_license_dominates_total(led):
+    """[알려진 한계] Splunk 계열은 라이선스가 총액의 대부분이라
+    스토리지 최적화 효과가 총액에서 잘 드러나지 않는다.
+
+    50GB/day 기준 소프트웨어가 총액의 약 85%를 차지한다.
+    따라서 SmartStore/Dell 접점의 가치를 보이려면 총액이 아니라
+    "저장 비용 항목"을 분리해 제시해야 한다. Phase 8 서술 시 유의.
+    """
+    sc = cm.Scenario(daily_gb=50, years=5, which="base")
+    r = te.compute_tco(cm.SPLUNK, sc, led)
+    sw_share = r.bucket_total("software") / r.total
+    assert sw_share > 0.7, "라이선스 비중이 낮아짐 — 서술 전제 재검토 필요"
 
 
 if __name__ == "__main__":

@@ -207,6 +207,7 @@ def compute_storage_smartstore(
     replication: ReplicationPolicy = None,
     cache_days: int = 14,
     local_replication: int = 1,
+    full_search_retention: bool = False,
     object_overhead: float = 1.0,
 ):
     """Splunk SmartStore 구성의 저장 용량을 계산한다.
@@ -229,6 +230,12 @@ def compute_storage_smartstore(
         로컬 캐시에 유지되는 일수. hot_warm_days보다 짧아야 티어링 효과가 난다.
     local_replication : int
         로컬 캐시의 복제 수. 원격이 SoR이므로 기본 1.
+    full_search_retention : bool
+        False(기본): 표준 수명주기. frozen 구간은 원격에서도 tsidx를 버려 0.15 계수.
+        True: 전 보존기간을 검색 가능 상태(0.5)로 원격 유지.
+              ISMS 심사 조회 요구 등으로 오래된 접속기록도 즉시 검색해야 하는 경우.
+              비용은 오르지만 일반 Splunk(frozen 검색 불가)와 기능이 달라지므로,
+              이 옵션을 켠 결과를 일반 Splunk와 총액만으로 비교해서는 안 된다.
 
     Returns
     -------
@@ -256,11 +263,25 @@ def compute_storage_smartstore(
         * daily_gb * effective_cache
     )
 
-    # 원격 오브젝트: 전 보존기간의 검색 가능 사본 1벌
-    total_days = r.hot_warm_days + r.cold_days + r.frozen_days
+    # 원격 오브젝트: 표준 수명주기를 그대로 따른다.
+    #   SmartStore가 바꾸는 것은 "warm 버킷을 어디에 저장하는가"(로컬 → 원격)이지
+    #   "frozen 단계가 사라진다"는 뜻이 아니다. Splunk의 아카이브 정책은
+    #   SmartStore 여부와 무관하게 동일하게 적용된다.
+    #   따라서 hot/warm/cold 구간만 검색 가능 상태(0.5)로, frozen은 0.15로 계산한다.
+    searchable_days = r.hot_warm_days + r.cold_days
+    if full_search_retention:
+        # [옵션] 전 보존기간을 검색 가능 상태로 원격 유지.
+        # ISMS 심사 조회 요구 등으로 오래된 접속기록도 즉시 검색해야 하는 경우.
+        # 비용은 올라가지만 일반 Splunk(frozen 검색 불가)와 기능이 달라진다.
+        searchable_days = r.hot_warm_days + r.cold_days + r.frozen_days
+        frozen_days = 0
+    else:
+        frozen_days = r.frozen_days
+
     remote_gb = (
-        (RAWDATA_RATIO + TSIDX_RATIO) * daily_gb * total_days * object_overhead
-    )
+        (RAWDATA_RATIO + TSIDX_RATIO) * daily_gb * searchable_days
+        + FROZEN_RATIO * daily_gb * frozen_days
+    ) * object_overhead
 
     return StorageResult(
         hot_warm_tb=round(cache_gb / GB_PER_TB, 6),
