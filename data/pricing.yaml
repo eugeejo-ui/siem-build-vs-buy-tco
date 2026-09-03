@@ -110,12 +110,23 @@ common:
     high: 30
     unit: "%/year"
     applies_to: [all]
-    status: unverified
-    confidence: assumption
-    source: ""
-    source_url: ""
-    retrieved: ""
-    note: "이전 세션 가정값, 출처 미확보. 민감도 분석 필수."
+    status: partial
+    confidence: thirdparty
+    source: >
+      [대리 지표] IDC Global DataSphere Forecast: 전세계 데이터 생성·복제량 CAGR
+      2020-2025 기준 23%, 2019-2024 기준 26%. 특히 기업(Enterprise) DataSphere는
+      소비자 대비 2배 이상 빠르게 성장한다고 명시. 본 프로젝트의 20~30% 범위는
+      이 공신력 있는 데이터 증가율 범위와 정합.
+    source_url: "https://www.businesswire.com/news/home/20220809005494/en/The-World-Is-Moving-Beyond-Big-Data-According-to-Ocient-Survey-of-500-Data-and-Technology-Leaders"
+    source_url_2: "https://www.marketresearch.com/IDC-v2477/Worldwide-IDC-Global-DataSphere-Forecast-31469143/"
+    retrieved: "2026-09-03"
+    note: >
+      [대리 지표임에 주의] IDC 수치는 "전세계 데이터 총량" 증가율이지
+      "특정 이커머스 기업의 SIEM 로그량" 증가율이 아니다. 개별 기업 로그 증가율의
+      공식 통계는 존재하지 않으므로, 방향과 대략적 범위의 근거로만 사용한다.
+      정확한 예측이 아니라 "이 정도로 증가한다는 가정이 업계 데이터 증가 추세와
+      어긋나지 않는다"를 보이는 용도. 시계열 예측은 수행하지 않음(결정론적 모델 원칙).
+      민감도 분석 대상.
 
   price_escalation_rate:
     name: "소프트웨어 연간 가격 인상률"
