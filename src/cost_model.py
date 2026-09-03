@@ -95,8 +95,24 @@ class CostBreakdown:
 # 용량 산출 — 선택지별로 계산 경로가 다름 (작업원칙 10항)
 # =============================================================================
 
-def compute_capacity(option, sc: Scenario):
+def compute_capacity(option, sc: Scenario, led=None):
     """선택지에 맞는 계산 경로로 티어별 용량(TB)을 구한다."""
+    if option == SPLUNK_SMARTSTORE:
+        # 원격 오브젝트가 SoR이 되어 로컬 복제 부담이 줄어든다.
+        # 이 구조 차이가 Dell ECS 접점의 경제적 근거다.
+        cache_days = led.get("smartstore_cache_days", sc.which) if led else 14
+        local_rep = led.get("smartstore_local_replication", sc.which) if led else 1
+        return sm.compute_storage_smartstore(
+            sc.daily_gb,
+            retention=sm.RetentionPolicy(
+                hot_warm_days=sc.hot_warm_days,
+                cold_days=sc.cold_days,
+                frozen_days=sc.frozen_days,
+            ),
+            replication=sm.ReplicationPolicy(rf=sc.rf, sf=sc.sf),
+            cache_days=int(cache_days),
+            local_replication=int(local_rep),
+        )
     if option in SPLUNK_FAMILY:
         return sm.compute_storage(
             sc.daily_gb,
@@ -171,7 +187,7 @@ def storage_cost(option, sc: Scenario, led, capacity=None):
         # 저장 비용이 서비스 요금에 포함. 중복 계상 금지.
         return 0.0
 
-    cap = capacity if capacity is not None else compute_capacity(option, sc)
+    cap = capacity if capacity is not None else compute_capacity(option, sc, led)
 
     ssd = led.get_krw("ssd_price", sc.which)
     hdd = led.get_krw("hdd_price", sc.which)
@@ -182,6 +198,13 @@ def storage_cost(option, sc: Scenario, led, capacity=None):
         local_gb = cap.hot_warm_tb * GB_PER_TB
         object_gb = cap.frozen_tb * GB_PER_TB
         return (local_gb * ssd + object_gb * obj) * MONTHS_PER_YEAR
+
+    if option == SPLUNK_SMARTSTORE:
+        # SmartStore도 로컬 캐시(SSD) + 원격 오브젝트 구조.
+        # 일반 Splunk와 달리 로컬 cold 계층이 없다.
+        cache_gb = cap.hot_warm_tb * GB_PER_TB
+        remote_gb = cap.frozen_tb * GB_PER_TB
+        return (cache_gb * ssd + remote_gb * obj) * MONTHS_PER_YEAR
 
     # Splunk 경로: hot/warm=SSD, cold=HDD, frozen=오브젝트
     hw_gb = cap.hot_warm_tb * GB_PER_TB
@@ -214,7 +237,7 @@ def compute_cost(option, sc: Scenario, led, capacity=None):
         per_node_gb_day = led.get("sizing_gb_per_instance_splunk_es", sc.which)
         load_nodes = math.ceil(sc.daily_gb / per_node_gb_day) if per_node_gb_day else 0
     else:
-        cap = capacity if capacity is not None else compute_capacity(option, sc)
+        cap = capacity if capacity is not None else compute_capacity(option, sc, led)
         per_node_tb = led.get("sizing_tb_per_node_selfhosted", sc.which)
         load_nodes = math.ceil(cap.total_tb / per_node_tb) if per_node_tb else 0
 
@@ -291,7 +314,7 @@ def annual_cost(option, sc: Scenario, led, year):
     if year < 1:
         raise CostModelError("year는 1 이상이어야 합니다.")
 
-    cap = compute_capacity(option, sc)
+    cap = compute_capacity(option, sc, led)
 
     return CostBreakdown(
         option=option,

@@ -201,6 +201,74 @@ def compute_storage_elastic(
     )
 
 
+def compute_storage_smartstore(
+    daily_gb,
+    retention: RetentionPolicy = None,
+    replication: ReplicationPolicy = None,
+    cache_days: int = 14,
+    local_replication: int = 1,
+    object_overhead: float = 1.0,
+):
+    """Splunk SmartStore 구성의 저장 용량을 계산한다.
+
+    일반 Splunk와의 차이 (Splunk 공식 문서 확인, 2026-09-03)
+        일반 : hot/warm/cold 전부를 로컬에 RF/SF만큼 복제 보관
+        SmartStore :
+          - hot 버킷과 "최근 생성·검색된 warm 버킷"만 로컬 캐시에 유지
+          - warm으로 롤되면 원격 오브젝트 스토어로 업로드되고 캐시에서 축출 대상이 됨
+          - 원격이 마스터 복사본(SoR)이므로 대상 인덱서들은 로컬 복사본을 삭제한다.
+            "원격 스토어가 여러 로컬 복사본 유지 없이도 고가용성을 보장"하기 때문
+          - 따라서 로컬 복제 부담이 RF에서 1벌 수준으로 줄어든다
+
+    이 구조 차이가 SmartStore의 판매 논리이자, 본 프로젝트에서
+    Dell ECS 접점을 숫자로 드러내는 지점이다.
+
+    Parameters
+    ----------
+    cache_days : int
+        로컬 캐시에 유지되는 일수. hot_warm_days보다 짧아야 티어링 효과가 난다.
+    local_replication : int
+        로컬 캐시의 복제 수. 원격이 SoR이므로 기본 1.
+
+    Returns
+    -------
+    StorageResult
+        hot_warm_tb : 로컬 캐시 (고성능 디스크)
+        cold_tb     : 0.0 (SmartStore는 로컬 cold 계층을 두지 않는다)
+        frozen_tb   : 원격 오브젝트 스토어 (전 보존기간)
+    """
+    if daily_gb < 0:
+        raise ValueError("daily_gb는 0 이상이어야 합니다.")
+    if cache_days < 0:
+        raise ValueError("cache_days는 0 이상이어야 합니다.")
+    if local_replication < 1:
+        raise ValueError("local_replication은 1 이상이어야 합니다.")
+    if object_overhead <= 0:
+        raise ValueError("object_overhead는 0보다 커야 합니다.")
+
+    r = retention or RetentionPolicy()
+    rep = replication or ReplicationPolicy()
+
+    # 로컬 캐시: 검색 가능 상태(rawdata+tsidx)이나 복제는 1벌 수준
+    effective_cache = min(cache_days, r.hot_warm_days + r.cold_days)
+    cache_gb = (
+        (RAWDATA_RATIO + TSIDX_RATIO) * local_replication
+        * daily_gb * effective_cache
+    )
+
+    # 원격 오브젝트: 전 보존기간의 검색 가능 사본 1벌
+    total_days = r.hot_warm_days + r.cold_days + r.frozen_days
+    remote_gb = (
+        (RAWDATA_RATIO + TSIDX_RATIO) * daily_gb * total_days * object_overhead
+    )
+
+    return StorageResult(
+        hot_warm_tb=round(cache_gb / GB_PER_TB, 6),
+        cold_tb=0.0,
+        frozen_tb=round(remote_gb / GB_PER_TB, 6),
+    )
+
+
 if __name__ == "__main__":
     # 자체 검산: phase35 검증 예시 (100GB/day, 사본 1벌, 1년 기준)
     #   Hot/Warm 30일 → 1.5 TB
