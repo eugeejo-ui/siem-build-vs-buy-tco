@@ -26,7 +26,8 @@ from dataclasses import dataclass, field
 import cost_model as cm
 
 
-ANALYSIS_MAX_GB = 200   # 분석 구간 상한 (phase00)
+# 분석 구간 상한은 config에서 가져온다(breakeven.MAX_GB와 중복 정의 해소)
+from config import ANALYSIS_MAX_GB
 
 
 @dataclass

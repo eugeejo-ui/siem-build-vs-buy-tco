@@ -1,7 +1,7 @@
 """
 test_storage_model.py — 스토리지 변환 모듈 검산
 
-기준값 출처: docs/phase35_storage_layer.md 2.3절
+기준값 출처: docs/phase03b_storage_layer.md 2.3절
   100GB/day, 사본 1벌(RF=SF=1), 1년 기준
     Hot/Warm 30일  → 1.5 TB
     Cold     60일  → 3.0 TB
@@ -21,7 +21,7 @@ from storage_model import (
 
 
 def test_verified_example_single_copy():
-    """phase35 검증 예시와 정확히 일치해야 한다."""
+    """phase03b 검증 예시와 정확히 일치해야 한다."""
     res = compute_storage(100)
     assert res.hot_warm_tb == pytest.approx(1.5)
     assert res.cold_tb == pytest.approx(3.0)

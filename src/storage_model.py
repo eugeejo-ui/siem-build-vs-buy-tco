@@ -6,7 +6,7 @@ storage_model.py — 스토리지 변환 모듈 (Phase 3.5)
     가격은 다루지 않는다. 순수 함수이며 가격 데이터가 전혀 필요 없다.
     (가격은 다음 단계인 비용 엔진 tco_engine.py에서 이 출력에 곱해진다.)
 
-검증된 계수 (Splunk 공식 문서, 2026-09-02 확인 — 상세는 docs/phase35_storage_layer.md)
+검증된 계수 (Splunk 공식 문서, 2026-09-02 확인 — 상세는 docs/phase03b_storage_layer.md)
     RAWDATA_RATIO = 0.15   원본(rawdata) 비율. 복제 시 RF가 곱해짐.
     TSIDX_RATIO   = 0.35   색인(tsidx) 비율.   복제 시 SF가 곱해짐.
     검색 가능 계층(hot/warm/cold) 합계 = 0.50
@@ -18,7 +18,7 @@ storage_model.py — 스토리지 변환 모듈 (Phase 3.5)
 
     ※ 구 방식 (0.5 * RF)은 RF=SF일 때만 성립하므로 폐기. RF/SF를 분리해 계산한다.
 
-미확정 기본값 (docs/phase35_storage_layer.md 4절)
+미확정 기본값 (docs/phase03b_storage_layer.md 4절)
     rf, sf, frozen_copies : 기본 1벌(=검증 예시와 일치). 클러스터 배수는 호출 시 명시.
     object_overhead       : 오브젝트 티어링 선택지용 자리. 기본 1.0(오버헤드 없음).
 
@@ -36,7 +36,8 @@ from dataclasses import dataclass, field
 RAWDATA_RATIO = 0.15
 TSIDX_RATIO = 0.35
 FROZEN_RATIO = 0.15  # = RAWDATA_RATIO (frozen은 원본만 남김)
-GB_PER_TB = 1000     # Splunk 산정 예시가 십진 TB(÷1000) 기준
+# GB_PER_TB는 config에서 가져온다(cost_model과 중복 정의되어 있던 것을 단일화)
+from config import GB_PER_TB
 
 # [Elastic 경로] Elasticsearch 사이징 공식, 2026-09-03 확인
 # 총용량 = 일일량 × 보존일 × (1 + 복제본) × 1.15
@@ -49,7 +50,7 @@ ELASTIC_OVERHEAD = 1.15
 
 @dataclass
 class RetentionPolicy:
-    """티어별 보존일수. 기본값은 phase35 예시(1년) 기준.
+    """티어별 보존일수. 기본값은 phase03b 예시(1년) 기준.
 
     규제 2년(730일) 시나리오는 frozen_days를 늘려 표현한다.
     예: hot/warm 30, cold 60, frozen 640  →  합계 730일
@@ -291,7 +292,7 @@ def compute_storage_smartstore(
 
 
 if __name__ == "__main__":
-    # 자체 검산: phase35 검증 예시 (100GB/day, 사본 1벌, 1년 기준)
+    # 자체 검산: phase03b 검증 예시 (100GB/day, 사본 1벌, 1년 기준)
     #   Hot/Warm 30일 → 1.5 TB
     #   Cold     60일 → 3.0 TB
     #   Frozen   270일 → 약 4.05 TB

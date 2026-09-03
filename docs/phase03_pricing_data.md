@@ -7,7 +7,7 @@
 | 상태 | **진행 중** (클라우드·소프트웨어 단가 확보 완료 / 사이징·역산 항목 잔여) |
 | 최종 정리일 | 2026년 9월 3일 |
 | 선행 문서 | phase02_cost_structure.md |
-| 후속 문서 | phase35_storage_layer.md, phase04_tco_engine.md (예정) |
+| 후속 문서 | phase03b_storage_layer.md, phase04_tco_engine.md (예정) |
 
 ---
 
