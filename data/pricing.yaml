@@ -241,12 +241,17 @@ software:
     high: null
     unit: "USD/GB-day/year"
     applies_to: [splunk, splunk_smartstore]
-    status: partial
+    status: pending
     confidence: derived
-    source: ""
-    retrieved: ""
+    source: >
+      국내가 비공개. 역산용 해외 정가 앵커(제3자 분석): ES 포함 시 GB/day당 연 $1,800~2,500(정가),
+      대량 협상 시 $300~600 수준까지 하락. 실계약은 정가 대비 25~55% 할인이 일반적.
+    source_url: "https://vendorbenchmark.com/vendors/splunk-security-pricing"
+    retrieved: "2026-09-03"
     note: >
-      국내 판매가 비공개. 확인된 공개 출처 간 3~5배 편차 존재.
+      [미착수·역산 대상] 국내 판매가 비공개, 공개 출처 간 3~5배 편차.
+      단일 값으로 확정하지 않고 "얼마 이하이면 유리한가" 형태의 역산으로 처리.
+      위 해외 정가는 앵커일 뿐이며 국내가로 그대로 쓰지 않는다(환율·유통구조 상이).
       단일 값으로 확정하지 않고 "얼마 이하이면 유리한가" 형태의 역산으로 처리.
 
   splunk_es_uplift:
@@ -390,20 +395,92 @@ storage:
     retrieved: "2026-09-03"
     note: >
       [부분 확인] 대표 m6i 계열 실측(서울, 온디맨드 월). 1년/3년 약정 시 30~50% 저렴.
-      실제 필요 대수는 sizing_gb_per_instance(미착수)가 정해져야 산출 가능.
+      실제 필요 대수 = max(부하 기준 대수, ha_minimum_nodes).
+      부하 기준 대수는 sizing_gb_per_instance_* 항목 참조(Splunk는 확보, 자체구축은 미착수).
 
-  sizing_gb_per_instance:
-    name: "인스턴스 1대당 처리 가능 로그량"
+  sizing_gb_per_instance_splunk_es:
+    name: "인덱서 1대당 처리 로그량 — Splunk + ES(SIEM 기능)"
+    low: 80
+    base: 100
+    high: 100
+    unit: "GB/day"
+    applies_to: [splunk, splunk_smartstore]
+    status: partial
+    confidence: thirdparty
+    source: >
+      Splunk 공식 커뮤니티(community.splunk.com) 내 SplunkTrust 인증 전문가 및
+      Splunk 직원 답변 다수 수렴. 별도 실사례(80GB/day 설계 검토)에서도 동일 규칙 확인.
+    source_url: "https://community.splunk.com/t5/Deployment-Architecture/Splunk-Sizing-CPU-and-RAM/td-p/761575"
+    source_url_2: "https://community.splunk.com/t5/Splunk-Search/Splunk-enterprise-sizing-with-ES/m-p/400584"
+    retrieved: "2026-09-03"
+    note: >
+      [신뢰도 주의] Splunk 공식 사양표가 아니라 인증 전문가 경험칙.
+      벤더 공식 입장은 "규모별 정확 산정은 세일즈 엔지니어/PS 아키텍트와 상담"이며,
+      Splunk사가 확정 사양으로 보증하지 않는 항목. 그래서 단일값이 아닌 범위로 처리.
+      ES는 상관검색·가속 데이터모델이 CPU/IOPS를 크게 소모해 단순 인덱싱 대비 처리량이 약 1/3로 하락.
+      클러스터 구성 시 인덱서 약 10% 추가 권장(위 출처).
+
+  sizing_gb_per_instance_splunk_only:
+    name: "인덱서 1대당 처리 로그량 — Splunk 단독(SIEM 기능 미적용)"
+    low: 75
+    base: 100
+    high: 300
+    unit: "GB/day"
+    applies_to: [splunk]
+    status: partial
+    confidence: thirdparty
+    source: >
+      Splunk 공식 커뮤니티 SplunkTrust 답변(75~300 GB/day, 워크로드 의존).
+      제3자 베스트프랙티스 문서에서도 "단일 인덱서 최대 약 300GB/day" 인용.
+      Cisco 레퍼런스 아키텍처(2TB/day에 인덱서 8대 = 250GB/day/대)와도 정합.
+    source_url: "https://community.splunk.com/t5/Getting-Data-In/What-is-the-maximum-Splunk-indexing-capacity-per-second-We-need/m-p/251568"
+    source_url_2: "https://www.aplura.com/splunk-best-practices/"
+    retrieved: "2026-09-03"
+    note: >
+      [신뢰도 주의] 위 항목과 동일하게 벤더 확정 사양 아님.
+      본 프로젝트는 SIEM 용도이므로 기본 시나리오에는 ES 적용값(80~100)을 사용하고,
+      본 항목은 "SIEM 기능 없이 로그 수집만 할 경우"의 대조군으로만 사용.
+
+  sizing_gb_per_instance_selfhosted:
+    name: "노드 1대당 처리 로그량 — 자체 구축(Elastic/Wazuh)"
     low: null
     base: null
     high: null
     unit: "GB/day"
     applies_to: [self_hosted, self_hosted_tiered]
     status: pending
-    confidence: vendor
-    source: ""
-    retrieved: ""
-    note: "본 값이 없으면 컴퓨트 단가를 알아도 대입 불가."
+    confidence: thirdparty
+    source: >
+      노드 권장 사양은 확보(Wazuh 인덱서 8 vCPU / 16GB RAM, 매니저 노드 16GB/8core 기준 약 5,000 EPS).
+      단 GB/day 단위의 노드당 처리량 기준값은 미확보.
+    source_url: "https://documentation.wazuh.com/current/user-manual/wazuh-indexer/wazuh-indexer-tuning.html"
+    retrieved: "2026-09-03"
+    note: >
+      [미착수] EPS(초당 이벤트) 기준은 있으나 GB/day 환산에 필요한 평균 이벤트 크기가 미정.
+      참고: 이벤트 크기는 소스별 편차 큼(방화벽 300~800B, EDR 500~2000B, 클라우드 감사로그 1~5KB).
+      환산 가정을 세우거나, EPS 기준 사이징으로 축을 바꿀지 결정 필요.
+
+  ha_minimum_nodes:
+    name: "고가용성(HA) 최소 노드 수"
+    low: 3
+    base: 3
+    high: 3
+    unit: "count"
+    applies_to: [self_hosted, self_hosted_tiered, splunk, splunk_smartstore]
+    status: partial
+    confidence: thirdparty
+    source: >
+      SplunkTrust 답변: "RF=2에서 노드 손실을 견디려면 3대를 최소(floor)로 잡아야 함".
+      Wazuh 측도 3노드 인덱서 클러스터를 고가용성 권장 구성으로 안내.
+    source_url: "https://community.splunk.com/t5/Deployment-Architecture/Splunk-Sizing-CPU-and-RAM/td-p/761575"
+    source_url_2: "https://groups.google.com/g/wazuh/c/RcesaofskoU"
+    retrieved: "2026-09-03"
+    note: >
+      [중요] 부하 기준 필요 대수와 별개로 적용되는 하한 제약.
+      중점 구간(20~50GB/day)은 부하상 1대면 충분하나 클러스터 운영 시 3대가 최소이므로,
+      소규모 구간일수록 자체 구축의 컴퓨트 비용이 부하 대비 과도하게 계상됨.
+      → 손익분기점을 왼쪽으로 미는 요인. Phase 5에서 이 제약의 영향을 별도 분석할 것.
+      단일 서버 운영(HA 포기) 시나리오는 별도 파라미터로 분기.
 
 # -----------------------------------------------------------------------------
 # 6. 인건비 (Phase 2 - 덩어리 3·4)
