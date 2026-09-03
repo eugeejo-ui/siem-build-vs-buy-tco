@@ -1,0 +1,481 @@
+# =============================================================================
+# 가격 원장 (Pricing Ledger)
+# 프로젝트: SIEM 자체 구축 vs 구매 총비용(TCO) 비교 분석
+#
+# 본 파일의 역할
+#   계산에 투입되는 모든 숫자를 한곳에 모아 둔 파일입니다.
+#   코드에는 숫자를 직접 적지 않으며, 값이 바뀌면 본 파일만 수정합니다.
+#
+# 작성 원칙 (phase00_scope.md 5절)
+#   1. 값은 하나로 적지 않고 low / base / high 세 칸으로 적습니다.
+#   2. 출처와 조회일을 함께 적습니다. 비어 있으면 아직 검증되지 않은 값입니다.
+#   3. 확인이 불가능한 값은 역산(derived)으로 처리합니다.
+# =============================================================================
+
+meta:
+  schema_version: "1.1"
+  updated: "2026-09-03"
+  base_currency: "KRW"
+
+  # status : confirmed(확정) / partial(일부 확인) / pending(미착수)
+  # confidence :
+  #   official   공공·협회 공식 통계
+  #   vendor     제조사 공개 자료 (편향 가능성 있음)
+  #   thirdparty 제3자 조사기관
+  #   derived    역산 처리 (원가 비공개 항목)
+  #   assumption 근거 없는 가정값 (민감도 분석 필수)
+  #   unverified 값은 있으나 출처 미확인
+
+# -----------------------------------------------------------------------------
+# 0. 환율
+#    Splunk·클라우드 단가는 USD, 인건비는 KRW이므로 환산 기준이 필요합니다.
+# -----------------------------------------------------------------------------
+fx:
+  usd_krw:
+    name: "원/달러 환율"
+    low: null
+    base: null
+    high: null
+    unit: "KRW/USD"
+    status: pending
+    confidence: assumption
+    source: ""
+    retrieved: ""
+    note: "조회일 기준값을 base로 기입. 민감도 범위는 ±10%로 설정."
+
+# -----------------------------------------------------------------------------
+# 1. 조직 프로파일 (Phase 1 확정분)
+# -----------------------------------------------------------------------------
+organization:
+
+  security_staff_ratio:
+    name: "IT 인력 중 보안 전담인력 비율 (D/C)"
+    low: 1.5
+    base: null
+    high: 7.1
+    unit: "%"
+    status: confirmed
+    confidence: official
+    source: "KISA 정보보호 공시 종합 포털 (무신사 2026 의무=1.5%, 11번가 2026 의무=7.1%)"
+    source_url: "https://isds.kisa.or.kr/kr/publish/list.do?menuNo=204942"
+    retrieved: "2026-09-02"
+    note: >
+      상한 앵커를 위메프(9.8%, 2024 정산사태)에서 11번가로 교체.
+      대형사 쿠팡 8.9%는 대조 사례. 6개사 비교 상세는 phase01 부록 A.
+
+  outsourcing_ratio:
+    name: "보안 인력 중 외주 비중"
+    low: 0
+    base: null
+    high: 59
+    unit: "%"
+    status: confirmed
+    confidence: official
+    source: "KISA 정보보호 공시 6개사 실측 (무신사 0% ~ 11번가 약 59%)"
+    source_url: "https://isds.kisa.or.kr/kr/publish/list.do?menuNo=204942"
+    retrieved: "2026-09-02"
+    note: "연도별 변동 극심(예: SSG 2.2→43.2%). 민감도 파라미터로 처리."
+
+  log_retention_days:
+    name: "로그(접속기록) 법정 보관 기간"
+    low: 730
+    base: 730
+    high: 730
+    unit: "days"
+    status: confirmed
+    confidence: official
+    source: "개인정보의 안전성 확보조치 기준 제8조 (현행 시행 2025-10-31, 고시 제2025-9호)"
+    source_url: "https://www.law.go.kr/admRulLsInfoP.do?chrClsCd=010202&admRulSeq=2100000229672"
+    retrieved: "2026-09-02"
+    note: >
+      5만명 이상 정보주체 또는 고유식별·민감정보 처리 시 적용. 법적 의무라 민감도 대상 아님.
+      적용 범위는 개인정보처리시스템 접속기록(SIEM 로그 전체 아님). 보수적 기준 가정.
+
+# -----------------------------------------------------------------------------
+# 2. 공통 계수
+# -----------------------------------------------------------------------------
+common:
+
+  log_growth_rate:
+    name: "연간 로그 증가율"
+    low: 20
+    base: 25
+    high: 30
+    unit: "%/year"
+    applies_to: [all]
+    status: unverified
+    confidence: assumption
+    source: ""
+    source_url: ""
+    retrieved: ""
+    note: "이전 세션 가정값, 출처 미확보. 민감도 분석 필수."
+
+  price_escalation_rate:
+    name: "소프트웨어 연간 가격 인상률"
+    low: 3
+    base: 6.5
+    high: 10
+    unit: "%/year"
+    applies_to: [managed_siem, splunk, splunk_smartstore, datadog]
+    status: unverified
+    confidence: assumption
+    source: ""
+    source_url: ""
+    retrieved: ""
+    note: "이전 세션 가정값, 출처 미확보. 자체 구축에는 적용하지 않음. 검증 대상."
+
+# -----------------------------------------------------------------------------
+# 3. 저장 계수 (Phase 3.5 신설 예정 — 현재 미검증)
+#    로그량을 실제 디스크 용량으로 바꾸는 계수입니다.
+#    용량 = 일일 로그량 × 보존일수 × 계수
+# -----------------------------------------------------------------------------
+storage_factor:
+
+  coeff_rawdata:
+    name: "원본(rawdata) 계수 — RF 적용 대상"
+    low: null
+    base: 0.15
+    high: null
+    unit: "ratio"
+    status: confirmed
+    confidence: vendor
+    source: "Splunk 공식 문서 Estimate your storage requirements"
+    source_url: "https://help.splunk.com/en/splunk-enterprise/get-started/deployment-capacity-manual/10.4/hardware-capacity-planning/estimate-your-storage-requirements"
+    retrieved: "2026-09-02"
+    note: "복제 시 RF가 곱해지는 대상."
+
+  coeff_tsidx:
+    name: "색인(tsidx) 계수 — SF 적용 대상"
+    low: null
+    base: 0.35
+    high: null
+    unit: "ratio"
+    status: confirmed
+    confidence: vendor
+    source: "Splunk 공식 문서 Estimate your storage requirements"
+    source_url: "https://help.splunk.com/en/splunk-enterprise/get-started/deployment-capacity-manual/10.4/hardware-capacity-planning/estimate-your-storage-requirements"
+    retrieved: "2026-09-02"
+    note: "rawdata+tsidx=0.50 (hot/warm/cold). 복제 시 SF가 곱해지는 대상."
+
+  coeff_frozen:
+    name: "frozen 계층 용량 계수"
+    low: null
+    base: 0.15
+    high: null
+    unit: "ratio"
+    status: confirmed
+    confidence: vendor
+    source: "Splunk 공식 문서 Archive indexed data"
+    source_url: "https://help.splunk.com/en/splunk-enterprise/administer/manage-indexers-and-indexer-clusters/9.0/indexing-overview/back-up-and-archive-your-indexes/archive-indexed-data"
+    retrieved: "2026-09-02"
+    note: "색인(tsidx) 제거, rawdata만 보관."
+
+  replication_factor:
+    name: "복제 계수 (RF) — rawdata에 적용"
+    low: 1
+    base: null
+    high: 3
+    unit: "count"
+    applies_to: [self_hosted, self_hosted_tiered, splunk]
+    status: pending
+    confidence: assumption
+    source: ""
+    source_url: ""
+    retrieved: ""
+    note: "기본값 미확정(흔히 RF=3). rawdata(0.15)에만 적용. 별도 검증 필요."
+
+  search_factor:
+    name: "검색 계수 (SF) — tsidx에 적용"
+    low: 1
+    base: null
+    high: 3
+    unit: "count"
+    applies_to: [self_hosted, self_hosted_tiered, splunk]
+    status: pending
+    confidence: assumption
+    source: ""
+    source_url: ""
+    retrieved: ""
+    note: >
+      v2.1 신설. RF와 별도(흔히 SF=2). tsidx(0.35)에만 적용.
+      검색가능 저장량 = (0.15×RF)+(0.35×SF). 0.5×RF 단순화는 폐기.
+
+  compression_ratio_legacy:
+    name: "[폐기] 단일 압축률"
+    low: null
+    base: 10
+    high: null
+    unit: "ratio"
+    status: deprecated
+    confidence: assumption
+    deprecated: true
+    source: ""
+    source_url: ""
+    retrieved: ""
+    note: >
+      Phase 2 4.1항의 10:1 단일 계수. 계층별 계수(coeff_rawdata/tsidx/frozen)로 대체 완료.
+      Phase 3.5 계수 검증(2026-09-02)으로 폐기 확정. 계산에 사용하지 않음.
+
+# -----------------------------------------------------------------------------
+# 4. 소프트웨어 비용 (Phase 2 - 덩어리 1)
+# -----------------------------------------------------------------------------
+software:
+
+  self_hosted_license:
+    name: "자체 구축 소프트웨어 사용료"
+    low: 0
+    base: 0
+    high: 0
+    unit: "KRW/year"
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: confirmed
+    confidence: official
+    source: "오픈소스 (Wazuh / ELK / Graylog)"
+    retrieved: ""
+    note: "유료 지원 계약을 구매하는 경우는 별도 항목으로 분리 필요."
+
+  splunk_ingest:
+    name: "Splunk 수집 과금 (일일 인덱싱량 기준)"
+    low: null
+    base: null
+    high: null
+    unit: "USD/GB-day/year"
+    applies_to: [splunk, splunk_smartstore]
+    status: partial
+    confidence: derived
+    source: ""
+    retrieved: ""
+    note: >
+      국내 판매가 비공개. 확인된 공개 출처 간 3~5배 편차 존재.
+      단일 값으로 확정하지 않고 "얼마 이하이면 유리한가" 형태의 역산으로 처리.
+
+  splunk_es_uplift:
+    name: "Splunk ES(SIEM 기능) 가산율"
+    low: 50
+    base: null
+    high: 100
+    unit: "% of base"
+    applies_to: [splunk, splunk_smartstore]
+    status: confirmed
+    confidence: thirdparty
+    source: "복수 Splunk 가격 분석 (제3자 종합)"
+    source_url: "https://www.virtualmetric.com/guides/splunk-pricing/"
+    retrieved: "2026-09-02"
+    note: >
+      기본 플랫폼가에 추가. 복수 독립 출처 수렴.
+      정가 기준이며 실계약 25~55% 할인 흔함 → 민감도 대상. base는 역산으로 결정.
+
+  splunk_retention_over_90d:
+    name: "Splunk 90일 초과 보관 가산율"
+    low: 30
+    base: null
+    high: 50
+    unit: "% of base subscription"
+    applies_to: [splunk]
+    status: partial
+    confidence: thirdparty
+    source: "Splunk 가격 분석 (제3자 종합)"
+    source_url: "https://www.virtualmetric.com/guides/splunk-pricing/"
+    retrieved: "2026-09-02"
+    note: >
+      Splunk Cloud 90일 포함, 초과분 별도. 30~50% 가산율은 검증됨.
+      단 24개월 구간의 절대 곡선은 공개자료 없어 선형외삽/계층곡선 선택이 민감도 대상.
+
+  managed_siem:
+    name: "관리형 SIEM 서비스 요금"
+    low: null
+    base: null
+    high: null
+    unit: "USD/GB-day/year"
+    applies_to: [managed_siem]
+    status: pending
+    confidence: derived
+    source: ""
+    retrieved: ""
+    note: "국내 MSSP 대부분 비공개. 나라장터 공공 입찰 계약 단가를 공개 앵커 후보로 검토."
+
+  datadog:
+    name: "Datadog 요금 (참고 비교군)"
+    low: null
+    base: null
+    high: null
+    unit: "USD/GB/month"
+    applies_to: [datadog]
+    status: pending
+    confidence: vendor
+    source: ""
+    retrieved: ""
+    note: "참고용. 주 결론에는 사용하지 않음."
+
+# -----------------------------------------------------------------------------
+# 5. 데이터 보관 비용 (Phase 2 - 덩어리 2)
+# -----------------------------------------------------------------------------
+storage:
+
+  ssd_price:
+    name: "고성능 SSD 단가 (hot/warm 계층)"
+    low: null
+    base: null
+    high: null
+    unit: "USD/GB/month"
+    applies_to: [self_hosted, self_hosted_tiered, splunk, splunk_smartstore]
+    status: pending
+    confidence: vendor
+    source: ""
+    retrieved: ""
+    note: "서울 리전 기준으로 통일. 개인정보 국내 보관 요건과 연계."
+
+  hdd_price:
+    name: "일반 디스크 단가 (cold 계층)"
+    low: null
+    base: null
+    high: null
+    unit: "USD/GB/month"
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: pending
+    confidence: vendor
+    source: ""
+    retrieved: ""
+    note: ""
+
+  object_price:
+    name: "오브젝트 스토리지 단가 (frozen/archive 계층)"
+    low: null
+    base: null
+    high: null
+    unit: "USD/GB/month"
+    applies_to: [self_hosted_tiered, splunk_smartstore]
+    status: pending
+    confidence: vendor
+    source: ""
+    retrieved: ""
+    note: >
+      S3 호환 및 Dell ECS 기준. 최저가 계층을 그대로 가정하지 말 것.
+      ISMS 심사 시 조회 요구가 발생하면 인출 비용과 지연이 추가됨.
+      [접점 검증 완료] Dell이 SmartStore를 ECS에 연결하는 공식 구성가이드·검증설계 배포 확인
+      (H17780 / Info Hub). PowerScale 연결은 미확인. 상세 phase35 3.5절.
+
+  retrieval_price:
+    name: "아카이브 인출 요금"
+    low: null
+    base: null
+    high: null
+    unit: "USD/GB"
+    applies_to: [self_hosted_tiered, splunk_smartstore]
+    status: pending
+    confidence: vendor
+    source: ""
+    retrieved: ""
+    note: "연간 조회 횟수 가정과 함께 사용."
+
+  compute_price:
+    name: "컴퓨트(서버) 단가"
+    low: null
+    base: null
+    high: null
+    unit: "USD/instance/month"
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: pending
+    confidence: vendor
+    source: ""
+    retrieved: ""
+    note: "GB/day당 필요 사양 산정 근거(Elastic·Wazuh 공식 사이징 문서) 확보 후 대입."
+
+  sizing_gb_per_instance:
+    name: "인스턴스 1대당 처리 가능 로그량"
+    low: null
+    base: null
+    high: null
+    unit: "GB/day"
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: pending
+    confidence: vendor
+    source: ""
+    retrieved: ""
+    note: "본 값이 없으면 컴퓨트 단가를 알아도 대입 불가."
+
+# -----------------------------------------------------------------------------
+# 6. 인건비 (Phase 2 - 덩어리 3·4)
+# -----------------------------------------------------------------------------
+labor:
+
+  security_consultant_annual:
+    name: "정보보호컨설턴트 연간 완전부담비용"
+    low: 93014196
+    base: 116472240
+    high: 121772940
+    unit: "KRW/person-year"
+    status: confirmed
+    confidence: official
+    source: "한국소프트웨어산업협회 2025년 적용 SW기술자 평균임금 (2024 조사, 통계승인 제375001호)"
+    source_url: "https://www.sw.or.kr/site/sw/ex/board/View.do?cbIdx=304&bcIdx=57938"
+    retrieved: "2026-09-02"
+    note: >
+      base=정보보호컨설턴트(IT컨설턴트 직군, 월 9,706,020×12). low=데이터분석가, high=IT아키텍트.
+      퇴직급여 등 포함 완전부담이라 별도 가산 금지. 정보보호컨설턴트는 IT컨설턴트 직군 대리지표.
+      2026년 적용본 공표 시 갱신 검토.
+
+  build_effort_initial:
+    name: "초기 구축 투입 공수"
+    low: null
+    base: null
+    high: null
+    unit: "person-month"
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: pending
+    confidence: assumption
+    source: ""
+    retrieved: ""
+    note: "1회성."
+
+  build_effort_learning:
+    name: "학습곡선 공수"
+    low: null
+    base: null
+    high: null
+    unit: "person-month"
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: pending
+    confidence: assumption
+    source: ""
+    retrieved: ""
+    note: "1회성."
+
+  build_effort_detection_rules:
+    name: "탐지룰 개발 공수"
+    low: null
+    base: null
+    high: null
+    unit: "person-month"
+    applies_to: [self_hosted, self_hosted_tiered]
+    status: pending
+    confidence: assumption
+    source: ""
+    retrieved: ""
+    note: >
+      금액으로 표현되지 않는 부분은 Phase 7에서 별도 처리.
+      선행 프로젝트의 미학습 공격 탐지율 하락 결과(0.9950 → 0.2577)를 근거로 인용.
+
+  ops_effort_daily:
+    name: "일상 운영 공수"
+    low: null
+    base: null
+    high: null
+    unit: "FTE"
+    status: pending
+    confidence: assumption
+    source: ""
+    retrieved: ""
+    note: "선택지별로 다르게 설정. 외주 비중(organization.outsourcing_ratio) 반영 필요."
+
+  ops_effort_isms:
+    name: "ISMS 심사 대응 공수"
+    low: null
+    base: null
+    high: null
+    unit: "person-month/year"
+    status: pending
+    confidence: assumption
+    source: ""
+    retrieved: ""
+    note: "국내 규제 특화 항목. 해외 TCO 자료에 존재하지 않음."
