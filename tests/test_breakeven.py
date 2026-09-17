@@ -208,18 +208,21 @@ def test_smartstore_storage_cheaper_than_plain(led):
     assert ss < plain
 
 
-def test_known_limitation_license_dominates_total(led):
-    """[알려진 한계] Splunk 계열은 라이선스가 총액의 대부분이라
+def test_known_limitation_license_is_largest_bucket(led):
+    """[알려진 한계] Splunk 계열은 라이선스가 가장 큰 덩어리라
     스토리지 최적화 효과가 총액에서 잘 드러나지 않는다.
 
-    50GB/day 기준 소프트웨어가 총액의 약 85%를 차지한다.
+    50GB/day 기준 소프트웨어가 총액의 약 51%로 가장 크다.
+    [2026-09-16 원 프로젝트 검증] 종전 약 87%는 ES 가산율 과대(S1)와
+    인덱서 사양·부가 서버·복제·관리 인력 누락(C4·C5·D6·L1·L2) 때문이었다.
     따라서 SmartStore/Dell 접점의 가치를 보이려면 총액이 아니라
     "저장 비용 항목"을 분리해 제시해야 한다. Phase 8 서술 시 유의.
     """
     sc = cm.Scenario(daily_gb=50, years=5, which="base")
     r = te.compute_tco(cm.SPLUNK, sc, led)
-    sw_share = r.bucket_total("software") / r.total
-    assert sw_share > 0.7, "라이선스 비중이 낮아짐 — 서술 전제 재검토 필요"
+    shares = {b: r.bucket_total(b) / r.total for b in ("software", "storage", "build", "ops")}
+    assert max(shares, key=shares.get) == "software", "라이선스가 최대 덩어리가 아님 — 서술 전제 재검토 필요"
+    assert shares["software"] > 0.4
 
 
 if __name__ == "__main__":

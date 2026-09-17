@@ -65,11 +65,31 @@ def test_growth_increases_total(sc, led):
     assert grow.total > fixed.total
 
 
-def test_first_year_same_regardless_of_growth(sc, led):
-    """1년차 로그량은 증가 여부와 무관하게 동일해야 한다."""
-    grow = te.compute_tco(cm.SELF_HOSTED, sc, led, grow=True)
-    fixed = te.compute_tco(cm.SELF_HOSTED, sc, led, grow=False)
+def test_first_year_same_regardless_of_growth(led):
+    """신규 도입이면 1년차 비용은 증가 여부와 무관하게 동일해야 한다.
+
+    [2026-09-16 원 프로젝트 검증 D2] 기본(기존 로그 이관)에서는 지난해 로그가 증가율만큼 적게
+    역산되므로 1년차 보관량이 달라진다. 1년차 로그량 자체(라이선스 기준)는 같다.
+    """
+    new = cm.Scenario(daily_gb=50, years=5, deployment="new")
+    grow = te.compute_tco(cm.SELF_HOSTED, new, led, grow=True)
+    fixed = te.compute_tco(cm.SELF_HOSTED, new, led, grow=False)
     assert grow.yearly[0].total == pytest.approx(fixed.yearly[0].total)
+
+    sc = cm.Scenario(daily_gb=50, years=5)
+    g = te.compute_tco(cm.SPLUNK, sc, led, grow=True)
+    f = te.compute_tco(cm.SPLUNK, sc, led, grow=False)
+    assert g.yearly[0].software == pytest.approx(f.yearly[0].software)
+    assert (te.compute_tco(cm.SELF_HOSTED, sc, led, grow=True).yearly[0].total
+            < te.compute_tco(cm.SELF_HOSTED, sc, led, grow=False).yearly[0].total)
+
+
+def test_accumulated_storage_below_steady_state(led):
+    """실제 누적 보관량은 매년 "그해 로그량 × 730일"(종전 방식)보다 적다(D1·D2)."""
+    steady = te.compute_tco(cm.SELF_HOSTED, cm.Scenario(daily_gb=50, deployment="steady"), led)
+    for dep in ("migrate", "new"):
+        acc = te.compute_tco(cm.SELF_HOSTED, cm.Scenario(daily_gb=50, deployment=dep), led)
+        assert acc.total < steady.total
 
 
 def test_volume_at_year_compounds(led):

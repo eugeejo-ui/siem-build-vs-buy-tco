@@ -16,6 +16,10 @@ tco_engine.py — TCO 누적 엔진 (Phase 4)
     ※ 시계열 예측(모델 학습)은 하지 않는다. 결정론적 모델 원칙(phase00).
       증가율은 원장의 low/base/high 범위를 그대로 곱하는 단순 복리 적용일 뿐이다.
 
+    [2026-09-16 원 프로젝트 검증 D1·D2]
+      종전에는 매년 "그해 로그량 × 730일"이 이미 차 있다고 계산해 보관량을 앞당겨 과대 산정했다.
+      이제 연차와 증가율을 Scenario에 넘겨, 저장 계층이 실제로 쌓인 양(도입 형태별)을 계산한다.
+
 경계
     로그량이 증가해 분석 상한(200 GB/day)을 넘으면 경고를 남긴다.
     상한을 넘은 구간의 계산은 외삽이므로 신뢰도가 떨어진다.
@@ -81,8 +85,8 @@ def compute_tco(option, sc: cm.Scenario, led, grow=True):
         vol = _volume_at_year(sc.daily_gb, growth, year, grow)
         if vol > ANALYSIS_MAX_GB:
             exceeded = True
-        # 그 해의 로그량으로 시나리오를 복제
-        year_sc = _with_volume(sc, vol)
+        # 그 해의 로그량·연차·증가율로 시나리오를 복제
+        year_sc = _with_volume(sc, vol, year=year, growth_pct=growth)
         yearly.append(cm.annual_cost(option, year_sc, led, year))
 
     result = TCOResult(option=option, years=sc.years, which=sc.which, yearly=yearly)
@@ -90,10 +94,10 @@ def compute_tco(option, sc: cm.Scenario, led, grow=True):
     return result
 
 
-def _with_volume(sc: cm.Scenario, new_gb):
-    """daily_gb만 바꾼 새 Scenario를 만든다(나머지 파라미터 유지)."""
+def _with_volume(sc: cm.Scenario, new_gb, **changes):
+    """daily_gb(와 지정한 필드)만 바꾼 새 Scenario를 만든다(나머지 파라미터 유지)."""
     from dataclasses import replace
-    return replace(sc, daily_gb=new_gb)
+    return replace(sc, daily_gb=new_gb, **changes)
 
 
 def compare(sc: cm.Scenario, led, options=None, grow=True):

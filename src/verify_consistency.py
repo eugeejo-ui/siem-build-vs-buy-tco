@@ -7,6 +7,8 @@ verify_consistency.py — 자기 검증 (Phase 10)
 왜 필요한가
     분석 과정에서 값이 여러 번 바뀌었다. 인상률 조정으로 손익분기가 60.2→44.2GB로,
     시뮬레이션 시행 횟수 변경으로 중앙값이 45.0→46.4GB로 이동했다.
+    2026-09-16 원 프로젝트 검증(model_audit/, ERRATA E-02) 반영으로
+    44.2→62.0GB, 80% 구간 37.3~56.4→37.7~64.2GB로 다시 이동했다.
     그때마다 관련 문서를 갱신했으나, 사람이 손으로 옮긴 숫자는 누락되기 쉽다.
 
     특히 위험한 것은 "본문은 갱신했는데 요약이나 권고표는 그대로인" 경우다.
@@ -54,11 +56,17 @@ def verify_numbers(led):
     bp5 = be.find_breakeven(cm.SELF_HOSTED_TIERED, cm.MANAGED_SIEM, led, years=5)
     bp3 = be.find_breakeven(cm.SELF_HOSTED_TIERED, cm.MANAGED_SIEM, led, years=3)
     bp_splunk = be.find_breakeven(cm.SELF_HOSTED_TIERED, cm.SPLUNK, led, years=5)
+    # 2026-09-16: 티어링 없는 자체구축도 Splunk 목록가 대비로는 교차가 생긴다(E-02).
+    bp_local_splunk = be.find_breakeven(cm.SELF_HOSTED, cm.SPLUNK, led,
+                                        tiering_ratio=0.0)
 
     docs_to_check = {
         "phase05_breakeven.md": [f"{bp5.primary}", f"{bp3.primary}"],
         "phase08a_presales_cisco.md": [f"{bp5.primary}", f"{bp3.primary}"],
     }
+    for doc in docs_to_check:
+        if bp_local_splunk.primary is not None:
+            docs_to_check[doc].append(f"{bp_local_splunk.primary}")
     for doc, values in docs_to_check.items():
         text = read(f"docs/{doc}")
         if not text:
@@ -113,7 +121,33 @@ def verify_numbers(led):
           f"'{share}%'가 문서에 없음")
 
     return {"bp5": bp5.primary, "bp3": bp3.primary, "mc_med": med,
-            "mc_lo": lo, "mc_hi": hi, "share": share}
+            "mc_lo": lo, "mc_hi": hi, "share": share,
+            "storage_gap_pct": storage_gap_pct(led)}
+
+
+def storage_gap_pct(led):
+    """Splunk 대 SmartStore 5년 저장 비용 차이가 Splunk 총액에서 차지하는 비중(%).
+
+    Dell판 원칙 4 서술(상용 제품에서 저장 절감이 총액에 희석됨)의 근거 값이다.
+    종전에는 문서 키워드 "0.07%"를 고정으로 찾았으나, 모델이 바뀌면 값도 바뀌므로
+    계산해서 대조한다(2026-09-16, E-02).
+    """
+    growth = led.get("log_growth_rate", "base")
+    storage = {}
+    total = None
+    for opt in (cm.SPLUNK, cm.SPLUNK_SMARTSTORE):
+        s = cm.Scenario(daily_gb=50, years=5, which="base")
+        acc = 0.0
+        for year in range(1, s.years + 1):
+            vol = te._volume_at_year(s.daily_gb, growth, year, True)
+            ys = te._with_volume(s, vol, year=year, growth_pct=growth)
+            cap = cm.compute_capacity(opt, ys, led)
+            obj = cm.compute_capacity(opt, ys, led, point="avg")
+            acc += cm.storage_cost(opt, ys, led, cap, obj)
+        storage[opt] = acc
+        if opt == cm.SPLUNK:
+            total = te.compute_tco(opt, s, led).total
+    return round(abs(storage[cm.SPLUNK] - storage[cm.SPLUNK_SMARTSTORE]) / total * 100, 1)
 
 
 # =============================================================================
@@ -135,15 +169,36 @@ def verify_internal(nums):
     check("일관성", f"Cisco판 권고 경계 {lo}GB", rec_ok,
           "권고표 경계가 신뢰구간 하한과 불일치")
 
-    # 옛 수치 잔존 확인
+    # 옛 수치 잔존 확인 — 줄 단위.
+    # 종전에는 문서에 "조정 전"이 한 번이라도 있으면 문서 전체를 건너뛰어,
+    # 경위 서술이 있는 문서의 다른 줄에 남은 옛 값을 놓칠 수 있었다(2026-09-16 변경).
+    # 정정 경위를 적은 줄(아래 표지 포함)만 예외로 둔다.
+    history_markers = ("조정 전", "갱신 전", "최초 500회", "종전", "→", "E-02",
+                       "당시", "검증 전",
+                       "before the model audit", "as it stood then")
     stale = ["45.0 GB", "35.2", "56.1", "60.2 GB", "500/500"]
-    for doc in DOCS.glob("phase*.md"):
-        t = doc.read_text(encoding="utf-8")
-        for s in stale:
-            # 조정 경위 서술은 예외
-            if s in t and "조정 전" not in t and "최초 500회" not in t:
-                check("일관성", f"{doc.name}: 옛 수치 '{s}' 잔존", False,
-                      "갱신 누락 가능성")
+    # 원 프로젝트 검증 이전 결과값 — 결과 문서에서만 검사한다.
+    # 작업기록 문서(phase00~04·07·10)는 당시 기록을 덮어쓰지 않는 관례이므로 제외.
+    # 37.3은 새 값(표준편차 등)과 겹치므로 구간 표기로만 찾는다.
+    stale_pre_audit = ["44.2", "123.3", "37.3 ~", "37.3~", "56.4", "46.4", "37~56",
+                       "1,438"]
+    result_docs = ["phase05_breakeven.md", "phase06_sensitivity.md",
+                   "phase08a_presales_cisco.md", "phase08b_presales_dell.md",
+                   "CHART_PLACEMENT.md"]
+    targets = [(d, stale) for d in DOCS.glob("phase*.md")]
+    targets += [(DOCS / n, stale_pre_audit) for n in result_docs]
+    targets += [(ROOT / n, stale + stale_pre_audit)
+                for n in ("README.md", "README.ko.md")]
+    for doc, words in targets:
+        if not doc.exists():
+            continue
+        for no, line in enumerate(doc.read_text(encoding="utf-8").splitlines(), 1):
+            if any(m in line for m in history_markers):
+                continue
+            for s in words:
+                if s in line:
+                    check("일관성", f"{doc.name}:{no} 옛 수치 '{s}' 잔존", False,
+                          "갱신 누락 가능성 (정정 경위 줄이면 표지를 넣을 것)")
 
 
 # =============================================================================
@@ -178,12 +233,22 @@ def verify_ledger(led):
 
     # 계산에 실제로 쓰이는 항목이 pending이면 안 된다
     blocked = {k for k, _, _ in led.blocked_items()}
+    # 2026-09-16 원 프로젝트 검증 반영: compute_price·splunk_ingest·splunk_es_uplift·
+    # sizing_tb_per_node_selfhosted는 폐기(deprecated)되고 아래 항목으로 대체되었다.
     used_in_calc = {
-        "ssd_price", "hdd_price", "object_price", "compute_price",
-        "security_consultant_annual", "usd_krw", "splunk_ingest",
-        "managed_siem", "splunk_es_uplift", "sizing_tb_per_node_selfhosted",
-        "ha_minimum_nodes", "log_retention_days", "log_growth_rate",
-        "price_escalation_rate",
+        "ssd_price", "hdd_price", "object_price", "object_price_standard_tiers",
+        "security_consultant_annual", "usd_krw",
+        "splunk_term_license_tiers", "splunk_list_price_factor",
+        "managed_siem", "ha_minimum_nodes", "log_retention_days", "log_growth_rate",
+        "price_escalation_rate", "replication_factor", "search_factor",
+        "compute_commitment_discount", "selfhosted_node_price", "selfhosted_node_ram",
+        "selfhosted_hot_days", "selfhosted_hot_ratio", "selfhosted_warm_ratio",
+        "selfhosted_search_cache_ratio", "selfhosted_search_node_cache_tb",
+        "selfhosted_support_servers_price", "selfhosted_compression_saving",
+        "splunk_indexer_price", "splunk_support_servers_price",
+        "disk_headroom_factor", "inter_az_transfer_price",
+        "ops_effort_splunk_admin", "build_splunk_ps_package",
+        "sizing_gb_per_instance_splunk_es",
     }
     conflict = blocked & used_in_calc
     check("원장", "계산 사용 항목의 가용성", not conflict,
@@ -206,12 +271,13 @@ def verify_ledger(led):
 # 5. 작업 원칙 준수
 # =============================================================================
 
-def verify_principles(led):
+def verify_principles(led, nums):
     print("[5] 작업 원칙 준수")
 
     # 원칙 4: 불리한 결론을 숨기지 않았는가
+    # Dell판 키워드는 고정 문자열이 아니라 계산한 저장 비용 차이 비중이다(E-02).
     for doc, kw in [("phase08a_presales_cisco.md", "교차"),
-                    ("phase08b_presales_dell.md", "0.07%")]:
+                    ("phase08b_presales_dell.md", f"{nums['storage_gap_pct']}%")]:
         check("원칙", f"원칙4 불리한 결과 명시 ({doc})",
               kw in read(f"docs/{doc}"), "불리한 결과 서술 누락")
 
@@ -287,7 +353,7 @@ def main():
     verify_internal(nums)
     verify_links()
     verify_ledger(led)
-    verify_principles(led)
+    verify_principles(led, nums)
     verify_deliverables()
 
     # --- 결과 ---

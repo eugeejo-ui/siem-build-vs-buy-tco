@@ -48,6 +48,7 @@ class PriceItem:
     confidence: str
     source_url: str
     note: str
+    tiers: list = None   # 구간표 항목: [[하한, 값, ...], ...] (2026-09-16 신설)
 
     def value(self, which="base"):
         """값을 꺼낸다. which는 'low'/'base'/'high'."""
@@ -92,6 +93,7 @@ class PricingLedger:
                         confidence=node.get("confidence", ""),
                         source_url=node.get("source_url", ""),
                         note=node.get("note", ""),
+                        tiers=node.get("tiers"),
                     )
 
     def item(self, key):
@@ -149,6 +151,32 @@ class PricingLedger:
                 f"({it.name}) 원장을 먼저 채우십시오."
             )
         return it.value(which)
+
+    def tiers(self, key, allow_blocked=False):
+        """구간표 항목을 꺼낸다. 하한 오름차순 [[하한, 값, ...], ...].
+
+        물량 구간별로 단가가 달라지는 항목(Splunk 목록가, S3 사용량 구간)에 쓴다.
+        low/base/high 한 칸으로는 구간 할인을 표현할 수 없기 때문이다(2026-09-16 신설).
+        사용 불가 상태이거나 구간표가 비어 있으면 예외를 던진다.
+        """
+        it = self.item(key)
+        if it.status in BLOCKED_STATUS and not allow_blocked:
+            raise PricingError(
+                f"[{key}] status='{it.status}'이므로 계산에 사용할 수 없습니다. ({it.name})"
+            )
+        if not it.tiers:
+            raise PricingError(f"[{key}] 구간표(tiers)가 비어 있습니다.")
+        rows = sorted((list(r) for r in it.tiers), key=lambda r: r[0])
+        return rows
+
+    def tier_value(self, key, amount, column=1):
+        """amount가 속한 구간(하한 이상인 마지막 행)의 값. 첫 하한보다 작으면 첫 행."""
+        rows = self.tiers(key)
+        chosen = rows[0]
+        for r in rows:
+            if amount >= r[0]:
+                chosen = r
+        return chosen[column]
 
     def get_krw(self, key, which="base", fx_which="base"):
         """USD 항목이면 환율을 곱해 KRW로 환산해 반환한다."""

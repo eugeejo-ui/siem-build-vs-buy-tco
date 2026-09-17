@@ -159,8 +159,10 @@ def chart1_tco_curves(led, lang):
         ax.annotate(
             (f"손익분기 {bp.primary:.1f} GB" if lang == "ko"
              else f"Break-even {bp.primary:.1f} GB"),
-            xy=(bp.primary, max(series[cm.SELF_HOSTED]) * 0.55),
-            xytext=(bp.primary + 8, max(series[cm.SELF_HOSTED]) * 0.62),
+            # [2026-09-16] 손익분기가 62GB로 옮겨 가 종전 위치(높이 55~62%)가
+            # 계층화 없는 자체구축 선과 겹쳤다. 선이 없는 아래쪽에 둔다.
+            xy=(bp.primary, max(series[cm.SELF_HOSTED]) * 0.30),
+            xytext=(bp.primary + 6, max(series[cm.SELF_HOSTED]) * 0.16),
             fontsize=9, color="gray",
             arrowprops=dict(arrowstyle="->", color="gray", lw=1),
         )
@@ -189,7 +191,7 @@ def chart1_tco_curves(led, lang):
 # =============================================================================
 # 차트 2 — 손익분기점 분포 (몬테카를로)
 #   대응: Cisco판 4.3절
-#   메시지: 44.2GB는 단일 숫자가 아니라 35~56GB 구간이다
+#   메시지: 손익분기는 단일 숫자가 아니라 구간이다 (수치는 실행 결과를 그대로 표기)
 # =============================================================================
 
 def chart2_breakeven_distribution(led, lang, mc=None):
@@ -206,17 +208,19 @@ def chart2_breakeven_distribution(led, lang, mc=None):
     ax.axvspan(p10, p90, alpha=0.12, color="#2E86C1")
     ax.axvline(p50, color="#C0392B", linewidth=2)
 
-    ax.annotate(
+    # [2026-09-16] 분포가 넓어져(검증 반영) 라벨이 막대와 겹쳤다.
+    # 막대가 낮은 오른쪽 위 빈 공간에 축 좌표로 고정한다.
+    ax.text(
+        0.97, 0.93,
         (f"중앙값 {p50:.1f} GB" if lang == "ko" else f"Median {p50:.1f} GB"),
-        xy=(p50, ax.get_ylim()[1] * 0.9),
-        xytext=(p50 + 4, ax.get_ylim()[1] * 0.9),
+        transform=ax.transAxes, ha="right",
         fontsize=10, color="#C0392B", fontweight="bold",
     )
     ax.text(
-        (p10 + p90) / 2, ax.get_ylim()[1] * 0.05,
+        0.97, 0.86,
         (f"80% 구간  {p10:.1f} ~ {p90:.1f} GB" if lang == "ko"
          else f"80% interval  {p10:.1f} - {p90:.1f} GB"),
-        ha="center", fontsize=9.5, color="#1A5276",
+        transform=ax.transAxes, ha="right", fontsize=9.5, color="#1A5276",
     )
 
     if lang == "ko":
@@ -250,8 +254,16 @@ TORNADO_NAMES = {
         "build_effort_learning": "학습 기간 공수",
         "usd_krw": "환율",
         "smartstore_cache_days": "SmartStore 캐시 보존일",
-        "splunk_ingest": "Splunk 수집 단가",
+        "splunk_list_price_factor": "Splunk 실계약가 비율",
         "ops_effort_isms": "ISMS 대응 공수",
+        "compute_commitment_discount": "서버 약정 할인율",
+        "selfhosted_compression_saving": "자체구축 압축 절감률",
+        "selfhosted_search_node_cache_tb": "검색 노드당 캐시 용량",
+        "disk_headroom_factor": "디스크 여유 공간 배수",
+        "selfhosted_warm_ratio": "warm 노드 데이터 밀도",
+        "ops_effort_splunk_admin": "Splunk 관리 공수",
+        "build_splunk_ps_package": "Splunk 구축 서비스",
+        "splunk_support_servers_price": "Splunk 부가 서버",
     },
     "en": {
         "price_escalation_rate": "SW annual price escalation",
@@ -260,8 +272,16 @@ TORNADO_NAMES = {
         "build_effort_learning": "Learning curve effort",
         "usd_krw": "Exchange rate",
         "smartstore_cache_days": "SmartStore cache days",
-        "splunk_ingest": "Splunk ingest price",
+        "splunk_list_price_factor": "Splunk contract/list price ratio",
         "ops_effort_isms": "ISMS compliance effort",
+        "compute_commitment_discount": "Server commitment discount",
+        "selfhosted_compression_saving": "Self-hosted compression saving",
+        "selfhosted_search_node_cache_tb": "Cache per search node",
+        "disk_headroom_factor": "Disk headroom factor",
+        "selfhosted_warm_ratio": "Warm node data density",
+        "ops_effort_splunk_admin": "Splunk admin effort",
+        "build_splunk_ps_package": "Splunk implementation service",
+        "splunk_support_servers_price": "Splunk support servers",
     },
 }
 
@@ -297,6 +317,9 @@ def chart3_tornado(led, lang, rows=None):
     for i, r in enumerate(rows):
         ax.text(max(lows[i], highs[i]) + 0.6, i, f"±{r.swing:.1f}",
                 va="center", fontsize=8.5, color="#444")
+    # 가장 긴 오른쪽 막대의 변동폭 라벨이 테두리에 걸리지 않도록 여백을 둔다.
+    left, right = ax.get_xlim()
+    ax.set_xlim(left, max(right, max(max(lows), max(highs)) + 5))
 
     if lang == "ko":
         ax.set_title(f"결론을 흔드는 요인 순위 (기준 손익분기 {base:.1f} GB)",
@@ -414,7 +437,9 @@ def chart5_tiering_effect(led, lang):
 # =============================================================================
 # 차트 6 — 비용 구성 분해 (라이선스 지배)
 #   대응: Dell판 5.1절
-#   메시지: 상용 제품은 라이선스가 87%라 저장 최적화 효과가 총액에서 안 보인다
+#   메시지: 상용 제품은 라이선스가 최대 덩어리라 저장 최적화 효과가 총액에서 작게 보인다
+#   [2026-09-16] 원 프로젝트 검증(E-02) 반영 — 라이선스 비중 87%→약 51%, 저장 비용 차이 0.07%→약 2.7%.
+#   고정 문구("0.1% 미만", "총액을 지배")를 계산값 기반 문구로 바꿨다.
 # =============================================================================
 
 def chart6_cost_breakdown(led, lang):
@@ -432,13 +457,16 @@ def chart6_cost_breakdown(led, lang):
         # [주의] 저장·컴퓨트를 "1년치 x 연수"로 계산하면 안 된다.
         # 로그량이 매년 증가하므로 연차별로 각각 산출해 누적해야 한다.
         # (1년치 x 5로 계산하면 자체구축에서 약 3억원이 과소 산정된다)
+        # [2026-09-16] 연차·증가율을 함께 넘겨야 실제 누적 보관량으로 계산된다(원 프로젝트 검증 D1·D2).
+        # 저장 비용에는 오브젝트 연중 평균 용량과 복제 전송료가 포함된다.
         storage_only = 0.0
         compute_only = 0.0
         for year in range(1, s.years + 1):
             vol = te._volume_at_year(s.daily_gb, growth, year, True)
-            ys = te._with_volume(s, vol)
+            ys = te._with_volume(s, vol, year=year, growth_pct=growth)
             cap = cm.compute_capacity(opt, ys, led)
-            storage_only += cm.storage_cost(opt, ys, led, cap)
+            obj = cm.compute_capacity(opt, ys, led, point="avg")
+            storage_only += cm.storage_cost(opt, ys, led, cap, obj)
             compute_only += cm.compute_cost(opt, ys, led, cap)
 
         data[opt] = {
@@ -490,16 +518,18 @@ def chart6_cost_breakdown(led, lang):
 
     # 저장 비용 차이 강조
     diff = abs(data[cm.SPLUNK]["storage"] - data[cm.SPLUNK_SMARTSTORE]["storage"])
-    note = (f"Splunk 계열의 저장 비용 차이는 {diff:.2f}억원으로 총액의 0.1% 미만입니다"
+    diff_pct = diff / data[cm.SPLUNK]["total"] * 100
+    note = (f"Splunk 계열의 저장 비용 차이는 {diff:.2f}억원으로 Splunk 총액의 {diff_pct:.1f}%입니다"
             if lang == "ko" else
-            f"Storage cost difference in Splunk options: {diff:.2f} (under 0.1% of total)")
+            f"Storage cost difference in Splunk options: {diff:.2f} "
+            f"({diff_pct:.1f}% of the Splunk total)")
 
     if lang == "ko":
-        ax.set_title("비용 구성 분해 — 라이선스가 총액을 지배합니다 (50GB/day, 5년)",
+        ax.set_title("비용 구성 분해 — 상용은 라이선스가 최대 항목입니다 (50GB/day, 5년)",
                      fontsize=13.5, pad=12)
         ax.set_ylabel("5년 총소유비용 (억원)")
     else:
-        ax.set_title("Cost Breakdown — License Dominates Total (50GB/day, 5yr)",
+        ax.set_title("Cost Breakdown — License Is the Largest Block (50GB/day, 5yr)",
                      fontsize=13.5, pad=12)
         ax.set_ylabel("5-Year TCO (100M KRW)")
 

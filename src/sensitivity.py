@@ -56,7 +56,11 @@ DEFAULT_TRIALS = 2000
 #   usd_krw               범위가 넓고 계약 기간 내내 복리로 작용
 #   price_escalation_rate 손익분기점을 가장 크게 움직이는 항목으로 확인됨(변동폭 42.5GB).
 #                         2026-09-03 근거 확보로 partial 격상되었으나 영향력은 그대로다.
-EXTRA_TARGETS = ["usd_krw", "price_escalation_rate"]
+#   disk_headroom_factor  블록 디스크 여유 공간. 공식 산식마다 폭이 달라(Elastic +15%, AWS +32%)
+#   selfhosted_warm_ratio 자체구축 warm 노드 밀도. 공식 블로그마다 달라(1:100, 1:160)
+#                         2026-09-16 원 프로젝트 검증 반영 시 추가(구조 가정도 흔들기 — P6).
+EXTRA_TARGETS = ["usd_krw", "price_escalation_rate",
+                 "disk_headroom_factor", "selfhosted_warm_ratio"]
 
 # 흔들면 의미가 없거나 계산이 깨지는 항목은 제외한다.
 EXCLUDED_TARGETS = {

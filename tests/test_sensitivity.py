@@ -143,15 +143,17 @@ def test_build_effort_direction_is_upward(led):
     assert row.high_result > row.low_result
 
 
-def test_splunk_ingest_matters_only_against_splunk(led):
-    """Splunk 인제스트가는 관리형 비교에는 영향이 없고 Splunk 비교에는 커야 한다.
+def test_splunk_price_matters_only_against_splunk(led):
+    """Splunk 실계약가 비율은 관리형 비교에는 영향이 없고 Splunk 비교에는 커야 한다.
 
     이 대조가 성립하지 않으면 선택지별 비용 경로가 섞인 것이다.
+    [2026-09-16] 티어링 자체구축은 목록가 기준 5~200GB 전 구간에서 Splunk보다 싸 교차가 없으므로,
+    교차가 있는 로컬 자체구축과 비교한다.
     """
     vs_managed = sn.tornado(cm.SELF_HOSTED_TIERED, cm.MANAGED_SIEM, led)
-    vs_splunk = sn.tornado(cm.SELF_HOSTED_TIERED, cm.SPLUNK, led)
-    m = next(r for r in vs_managed if r.key == "splunk_ingest")
-    s = next(r for r in vs_splunk if r.key == "splunk_ingest")
+    vs_splunk = sn.tornado(cm.SELF_HOSTED, cm.SPLUNK, led)
+    m = next(r for r in vs_managed if r.key == "splunk_list_price_factor")
+    s = next(r for r in vs_splunk if r.key == "splunk_list_price_factor")
     assert m.swing == 0.0
     assert s.swing > 10
 

@@ -91,8 +91,29 @@ def test_retention_is_regulatory_730_days(led):
 
 
 def test_labor_cost_matches_official_stat(led):
-    """SW산업협회 통계값(월 9,706,020 x 12)."""
-    assert led.get("security_consultant_annual") == 116472240
+    """SW산업협회 2026년 적용 통계값(IT컨설턴트 월 10,707,960 x 12).
+
+    [2026-09-16 원 프로젝트 검증 L5] 종전 116,472,240원은 2025년 적용본이었다.
+    """
+    assert led.get("security_consultant_annual") == 128495520
+
+
+def test_deprecated_price_items_blocked(led):
+    """원 프로젝트 검증(2026-09-16)에서 대체된 항목은 계산에 쓰이면 안 된다."""
+    for k in ["splunk_ingest", "splunk_es_uplift", "compute_price",
+              "sizing_tb_per_node_selfhosted"]:
+        with pytest.raises(PricingError):
+            led.get(k)
+
+
+def test_tier_tables_loaded(led):
+    """구간표 항목은 하한 오름차순으로 읽혀야 한다."""
+    splunk = led.tiers("splunk_term_license_tiers")
+    assert [r[0] for r in splunk] == sorted(r[0] for r in splunk)
+    assert len(splunk[0]) == 3
+    s3 = led.tiers("object_price_standard_tiers")
+    assert s3[0] == [0, led.get("object_price")]
+    assert led.tier_value("object_price_standard_tiers", 60_000) == 0.024
 
 
 # --- 환율 환산 ---------------------------------------------------------------

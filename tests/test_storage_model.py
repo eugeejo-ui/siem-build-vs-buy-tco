@@ -12,11 +12,15 @@ import pytest
 from storage_model import (
     compute_storage,
     compute_storage_elastic,
+    history_days,
     RetentionPolicy,
     ReplicationPolicy,
     RAWDATA_RATIO,
     TSIDX_RATIO,
     ELASTIC_OVERHEAD,
+    DEPLOY_MIGRATE,
+    DEPLOY_NEW,
+    DEPLOY_STEADY,
 )
 
 
@@ -94,14 +98,55 @@ def test_elastic_replicas_zero_means_single_copy():
     assert res.total_tb == pytest.approx(3.45)
 
 
-def test_elastic_tiering_splits_but_preserves_total():
-    """티어링은 총량을 바꾸지 않고 로컬/오브젝트로 나누기만 한다(오버헤드 1.0일 때)."""
+def test_elastic_tiering_moves_old_data_as_single_copy():
+    """티어링은 오래된 구간을 오브젝트로 내리고, 오브젝트 계층은 원본 1벌만 둔다.
+
+    [2026-09-16 원 프로젝트 검증 D4] 종전에는 오브젝트에도 (1+복제본)을 곱해
+    "티어링은 총량을 보존한다"고 고정했으나, 스냅샷은 주 샤드만 담는다.
+    """
     no_tier = compute_storage_elastic(100, retention_days=730, replicas=1)
     tiered = compute_storage_elastic(
         100, retention_days=730, replicas=1, tiering_ratio=0.7
     )
-    assert tiered.total_tb == pytest.approx(no_tier.total_tb)
-    assert tiered.frozen_tb == pytest.approx(no_tier.hot_warm_tb * 0.7)
+    assert tiered.hot_warm_tb == pytest.approx(no_tier.hot_warm_tb * 0.3)
+    assert tiered.frozen_tb == pytest.approx(no_tier.hot_warm_tb * 0.7 / 2)
+    assert tiered.total_tb < no_tier.total_tb
+
+
+def test_elastic_hot_days_split_local():
+    """hot_days를 주면 로컬을 최근 hot과 나머지 warm으로 나눈다(합은 같다)."""
+    whole = compute_storage_elastic(100, retention_days=730, replicas=1)
+    split = compute_storage_elastic(100, retention_days=730, replicas=1, hot_days=30)
+    assert split.hot_warm_tb == pytest.approx(100 * 30 * 2 * 1.15 / 1000)
+    assert split.hot_warm_tb + split.cold_tb == pytest.approx(whole.hot_warm_tb)
+
+
+# --- 보관 기간 환산 (원 프로젝트 검증 D1·D2) ------------------------------------
+
+def test_history_steady_is_window_length():
+    f = history_days(year=3, growth_pct=25, deployment=DEPLOY_STEADY)
+    assert f(0, 730) == 730
+
+
+def test_history_new_deployment_starts_empty():
+    """신규 도입 1년차 말에는 1년치만 쌓여 있다."""
+    f = history_days(year=1, growth_pct=25, deployment=DEPLOY_NEW, point="end")
+    assert f(0, 730) == pytest.approx(365)
+    avg = history_days(year=1, growth_pct=25, deployment=DEPLOY_NEW, point="avg")
+    assert avg(0, 730) == pytest.approx(182.5)
+
+
+def test_history_migrate_reflects_smaller_past_logs():
+    """이관이면 2년치가 있지만 지난해 로그는 올해보다 적다(증가율 25%)."""
+    f = history_days(year=1, growth_pct=25, deployment=DEPLOY_MIGRATE, point="end")
+    assert f(0, 730) == pytest.approx(365 + 365 / 1.25)
+    flat = history_days(year=1, growth_pct=0, deployment=DEPLOY_MIGRATE, point="end")
+    assert flat(0, 730) == pytest.approx(730)
+
+
+def test_history_windows_add_up():
+    f = history_days(year=4, growth_pct=25, deployment=DEPLOY_MIGRATE, point="avg")
+    assert f(0, 90) + f(90, 730) == pytest.approx(f(0, 730))
 
 
 def test_elastic_and_splunk_paths_differ():
