@@ -1,0 +1,812 @@
+[
+ {
+  "case": "원 모델",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6,
+   "managed_siem@50": 1195.2
+  },
+  "breakdown": {
+   "self_hosted_tiered": {
+    "software": 0.0,
+    "disk": 508.1,
+    "server": 266.2,
+    "extra": 0.0,
+    "build": 155.3,
+    "ops": 218.4,
+    "nodes_by_year": [
+     6,
+     7,
+     9,
+     11,
+     14
+    ]
+   },
+   "self_hosted": {
+    "software": 0.0,
+    "disk": 1033.0,
+    "server": 266.2,
+    "extra": 0.0,
+    "build": 155.3,
+    "ops": 218.4,
+    "nodes_by_year": [
+     6,
+     7,
+     9,
+     11,
+     14
+    ]
+   },
+   "splunk": {
+    "software": 1251.5,
+    "disk": 28.9,
+    "server": 85.0,
+    "extra": 0.0,
+    "build": 0.0,
+    "ops": 72.8,
+    "nodes_by_year": [
+     3,
+     3,
+     3,
+     3,
+     3
+    ]
+   }
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     22.3
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "labor_scenarios": {
+   "no_ops": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      24.2
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [
+      10.2
+     ],
+     "cheaper_at_min": "splunk",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      79.5
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   },
+   "none": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      7.0
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      11.4
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   }
+  }
+ },
+ {
+  "case": "검증 A",
+  "tco": {
+   "self_hosted_tiered@20": 842.1,
+   "self_hosted_tiered@50": 1286.3,
+   "self_hosted_tiered@100": 2051.7,
+   "self_hosted@20": 1138.2,
+   "self_hosted@50": 2110.5,
+   "self_hosted@100": 3716.4,
+   "splunk@20": 1312.2,
+   "splunk@50": 1755.1,
+   "splunk@100": 2346.5,
+   "managed_siem@50": 1202.7
+  },
+  "breakdown": {
+   "self_hosted_tiered": {
+    "software": 0.0,
+    "disk": 493.1,
+    "server": 376.9,
+    "extra": 4.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     11,
+     12,
+     13,
+     15,
+     18
+    ]
+   },
+   "self_hosted": {
+    "software": 0.0,
+    "disk": 1069.2,
+    "server": 625.0,
+    "extra": 4.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     15,
+     17,
+     20,
+     23,
+     28
+    ]
+   },
+   "splunk": {
+    "software": 890.3,
+    "disk": 71.9,
+    "server": 463.1,
+    "extra": 2.7,
+    "build": 86.2,
+    "ops": 240.9,
+    "nodes_by_year": [
+     5,
+     5,
+     5,
+     5,
+     5
+    ]
+   }
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     62.0
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted_tiered",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     157.0
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     32.0
+    ],
+    "cheaper_at_min": "self_hosted",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "labor_scenarios": {
+   "no_ops": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      39.2
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      115.5
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   },
+   "none": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      17.3
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      33.0
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   }
+  }
+ },
+ {
+  "case": "검증 B-유리",
+  "tco": {
+   "self_hosted_tiered@20": 607.9,
+   "self_hosted_tiered@50": 814.1,
+   "self_hosted_tiered@100": 1175.8,
+   "self_hosted@20": 701.1,
+   "self_hosted@50": 1082.9,
+   "self_hosted@100": 1717.2,
+   "splunk@20": 1952.9,
+   "splunk@50": 2392.8,
+   "splunk@100": 2979.1,
+   "managed_siem@50": 1202.7
+  },
+  "breakdown": {
+   "self_hosted_tiered": {
+    "software": 0.0,
+    "disk": 272.5,
+    "server": 125.2,
+    "extra": 4.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     10,
+     11,
+     12,
+     13,
+     15
+    ]
+   },
+   "self_hosted": {
+    "software": 0.0,
+    "disk": 469.6,
+    "server": 196.9,
+    "extra": 4.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     11,
+     15,
+     17,
+     20,
+     23
+    ]
+   },
+   "splunk": {
+    "software": 890.3,
+    "disk": 66.9,
+    "server": 182.0,
+    "extra": 2.7,
+    "build": 206.9,
+    "ops": 1044.0,
+    "nodes_by_year": [
+     5,
+     5,
+     5,
+     5,
+     5
+    ]
+   }
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     24.8
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted_tiered",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     49.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "labor_scenarios": {
+   "no_ops": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      14.8
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      33.3
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   },
+   "none": {
+    "tiered_vs_managed_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      7.0
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   }
+  }
+ },
+ {
+  "case": "검증 B-불리",
+  "tco": {
+   "self_hosted_tiered@20": 896.6,
+   "self_hosted_tiered@50": 1422.6,
+   "self_hosted_tiered@100": 2324.3,
+   "self_hosted@20": 1301.8,
+   "self_hosted@50": 2519.5,
+   "self_hosted@100": 4534.4,
+   "splunk@20": 1320.2,
+   "splunk@50": 1775.1,
+   "splunk@100": 2386.6,
+   "managed_siem@50": 1202.7
+  },
+  "breakdown": {
+   "self_hosted_tiered": {
+    "software": 0.0,
+    "disk": 544.5,
+    "server": 376.9,
+    "extra": 89.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     11,
+     12,
+     13,
+     15,
+     18
+    ]
+   },
+   "self_hosted": {
+    "software": 0.0,
+    "disk": 1223.3,
+    "server": 625.0,
+    "extra": 259.0,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     15,
+     17,
+     20,
+     23,
+     28
+    ]
+   },
+   "splunk": {
+    "software": 890.3,
+    "disk": 76.8,
+    "server": 463.1,
+    "extra": 17.8,
+    "build": 86.2,
+    "ops": 240.9,
+    "nodes_by_year": [
+     5,
+     5,
+     5,
+     5,
+     5
+    ]
+   }
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     98.6
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     113.9,
+     123.0,
+     125.5
+    ],
+    "cheaper_at_min": "self_hosted_tiered",
+    "cheaper_at_max": "splunk"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "managed_siem"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     20.5
+    ],
+    "cheaper_at_min": "self_hosted",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "labor_scenarios": {
+   "no_ops": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      62.7
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [
+      113.9,
+      123.0,
+      125.5
+     ],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "splunk"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "managed_siem"
+    }
+   },
+   "none": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      25.8
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [
+      156.7
+     ],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "splunk"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      74.5,
+      75.5,
+      81.1
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   }
+  }
+ },
+ {
+  "case": "참고: A + S3 검색 불가",
+  "tco": {
+   "self_hosted_tiered@20": 780.8,
+   "self_hosted_tiered@50": 1180.5,
+   "self_hosted_tiered@100": 1847.4,
+   "self_hosted@20": 1138.2,
+   "self_hosted@50": 2110.5,
+   "self_hosted@100": 3716.4,
+   "splunk@20": 1312.2,
+   "splunk@50": 1755.1,
+   "splunk@100": 2346.5,
+   "managed_siem@50": 1202.7
+  },
+  "breakdown": {
+   "self_hosted_tiered": {
+    "software": 0.0,
+    "disk": 431.1,
+    "server": 333.1,
+    "extra": 4.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     10,
+     11,
+     12,
+     14,
+     16
+    ]
+   },
+   "self_hosted": {
+    "software": 0.0,
+    "disk": 1069.2,
+    "server": 625.0,
+    "extra": 4.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     15,
+     17,
+     20,
+     23,
+     28
+    ]
+   },
+   "splunk": {
+    "software": 890.3,
+    "disk": 71.9,
+    "server": 463.1,
+    "extra": 2.7,
+    "build": 86.2,
+    "ops": 240.9,
+    "nodes_by_year": [
+     5,
+     5,
+     5,
+     5,
+     5
+    ]
+   }
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     46.7
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted_tiered",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     108.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     32.0
+    ],
+    "cheaper_at_min": "self_hosted",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "labor_scenarios": {
+   "no_ops": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      29.8
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      78.3
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   },
+   "none": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      12.7
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      20.8
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   }
+  }
+ },
+ {
+  "case": "참고: A + 검색 90일 대칭",
+  "tco": {
+   "self_hosted_tiered@20": 659.6,
+   "self_hosted_tiered@50": 855.3,
+   "self_hosted_tiered@100": 1210.5,
+   "self_hosted@20": 958.3,
+   "self_hosted@50": 1660.7,
+   "self_hosted@100": 2816.9,
+   "splunk@20": 1312.2,
+   "splunk@50": 1755.1,
+   "splunk@100": 2346.5,
+   "managed_siem@50": 1202.7
+  },
+  "breakdown": {
+   "self_hosted_tiered": {
+    "software": 0.0,
+    "disk": 200.7,
+    "server": 238.2,
+    "extra": 4.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     8,
+     9,
+     10,
+     11,
+     12
+    ]
+   },
+   "self_hosted": {
+    "software": 0.0,
+    "disk": 619.4,
+    "server": 625.0,
+    "extra": 4.1,
+    "build": 171.3,
+    "ops": 240.9,
+    "nodes_by_year": [
+     15,
+     17,
+     20,
+     23,
+     28
+    ]
+   },
+   "splunk": {
+    "software": 890.3,
+    "disk": 71.9,
+    "server": 463.1,
+    "extra": 2.7,
+    "build": 86.2,
+    "ops": 240.9,
+    "nodes_by_year": [
+     5,
+     5,
+     5,
+     5,
+     5
+    ]
+   }
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     27.7
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted_tiered",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     54.5
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     56.7
+    ],
+    "cheaper_at_min": "self_hosted",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "labor_scenarios": {
+   "no_ops": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      18.3
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      38.3
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   },
+   "none": {
+    "tiered_vs_managed_5y": {
+     "crossings": [
+      8.9
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_splunk_5y": {
+     "crossings": [],
+     "cheaper_at_min": "self_hosted_tiered",
+     "cheaper_at_max": "self_hosted_tiered"
+    },
+    "tiered_vs_managed_3y": {
+     "crossings": [
+      13.6
+     ],
+     "cheaper_at_min": "managed_siem",
+     "cheaper_at_max": "self_hosted_tiered"
+    }
+   }
+  }
+ }
+]

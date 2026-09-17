@@ -1,0 +1,1880 @@
+[
+ {
+  "id": "BASE",
+  "label": "원 모델 그대로",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     22.3
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D1",
+  "label": "신규 도입 — 처음엔 비어 있고 실제로 쌓인 만큼 (EBS 연말·S3 연평균)",
+  "tco": {
+   "self_hosted_tiered@20": 655.6,
+   "self_hosted_tiered@50": 1041.6,
+   "self_hosted_tiered@100": 1698.2,
+   "self_hosted@20": 833.1,
+   "self_hosted@50": 1485.3,
+   "self_hosted@100": 2585.6,
+   "splunk@20": 667.9,
+   "splunk@50": 1433.0,
+   "splunk@100": 2708.3
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -5.8,
+   "self_hosted_tiered@50": -9.3,
+   "self_hosted_tiered@100": -11.7,
+   "self_hosted@20": -8.0,
+   "self_hosted@50": -11.2,
+   "self_hosted@100": -13.0,
+   "splunk@20": -0.3,
+   "splunk@50": -0.4,
+   "splunk@100": -0.4
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     34.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     19.2
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     73.6
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     66.7
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D2",
+  "label": "기존 2년치 이관 — 과거 로그량을 증가율로 역산 (EBS 연말·S3 연평균)",
+  "tco": {
+   "self_hosted_tiered@20": 665.1,
+   "self_hosted_tiered@50": 1082.3,
+   "self_hosted_tiered@100": 1774.0,
+   "self_hosted@20": 853.2,
+   "self_hosted@50": 1552.6,
+   "self_hosted@100": 2714.6,
+   "splunk@20": 668.5,
+   "splunk@50": 1434.7,
+   "splunk@100": 2711.7
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -4.4,
+   "self_hosted_tiered@50": -5.7,
+   "self_hosted_tiered@100": -7.7,
+   "self_hosted@20": -5.8,
+   "self_hosted@50": -7.2,
+   "self_hosted@100": -8.7,
+   "splunk@20": -0.2,
+   "splunk@50": -0.2,
+   "splunk@100": -0.3
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     36.4
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     19.8
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     92.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     103.0
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D3",
+  "label": "오픈소스 용량 계수 1.15 → 0.92 (best_compression 약 20% 절감, 무료판 가능)",
+  "tco": {
+   "self_hosted_tiered@20": 638.2,
+   "self_hosted_tiered@50": 995.4,
+   "self_hosted_tiered@100": 1611.5,
+   "self_hosted@20": 806.2,
+   "self_hosted@50": 1415.3,
+   "self_hosted@100": 2451.3,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -8.3,
+   "self_hosted_tiered@50": -13.3,
+   "self_hosted_tiered@100": -16.2,
+   "self_hosted@20": -11.0,
+   "self_hosted@50": -15.4,
+   "self_hosted@100": -17.5,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     30.8
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     18.0
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     73.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     47.3
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D4",
+  "label": "S3분 사본 제외 (스냅샷은 원본 샤드만 담음)",
+  "tco": {
+   "self_hosted_tiered@20": 627.9,
+   "self_hosted_tiered@50": 964.0,
+   "self_hosted_tiered@100": 1548.6,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -9.8,
+   "self_hosted_tiered@50": -16.0,
+   "self_hosted_tiered@100": -19.4,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     29.5
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     17.7
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     66.4
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D5",
+  "label": "오픈소스 로컬분 중 최근 30일만 SSD, 나머지는 st1 HDD($0.051)",
+  "tco": {
+   "self_hosted_tiered@20": 648.7,
+   "self_hosted_tiered@50": 1030.1,
+   "self_hosted_tiered@100": 1686.6,
+   "self_hosted@20": 731.2,
+   "self_hosted@50": 1236.3,
+   "self_hosted@100": 2098.9,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -6.8,
+   "self_hosted_tiered@50": -10.3,
+   "self_hosted_tiered@100": -12.3,
+   "self_hosted@20": -19.3,
+   "self_hosted@50": -26.1,
+   "self_hosted@100": -29.4,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     33.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     18.9
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     79.5
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     27.0
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D6a",
+  "label": "Splunk 사본 rf=2·sf=2·아카이브 2벌 (보안 용도 최소)",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 681.5,
+   "splunk@50": 1467.1,
+   "splunk@100": 2776.4
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 1.7,
+   "splunk@50": 2.0,
+   "splunk@100": 2.1
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     20.8
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D6b",
+  "label": "Splunk 사본 rf=3·sf=2·아카이브 3벌 (기본값·권장)",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 689.5,
+   "splunk@50": 1487.1,
+   "splunk@100": 2816.5
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 2.9,
+   "splunk@50": 3.4,
+   "splunk@100": 3.6
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     20.5
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D8",
+  "label": "Splunk cold를 sc1 → st1 ($0.051)",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 672.6,
+   "splunk@50": 1445.0,
+   "splunk@100": 2732.2
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 0.4,
+   "splunk@50": 0.5,
+   "splunk@100": 0.5
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     21.7
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D9",
+  "label": "S3 구간 체감 (0.025, 0.024, 0.023)",
+  "tco": {
+   "self_hosted_tiered@20": 695.8,
+   "self_hosted_tiered@50": 1144.3,
+   "self_hosted_tiered@100": 1910.7,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -0.0,
+   "self_hosted_tiered@50": -0.3,
+   "self_hosted_tiered@100": -0.6,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     43.6
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     22.3
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     119.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D10",
+  "label": "검색 가능 기간을 Splunk와 같게 — 오픈소스 로컬 90일(최근 30일 SSD·60일 HDD), 나머지 640일은 S3에 원본 1벌(검색 불가), 서버는 로컬분 기준",
+  "tco": {
+   "self_hosted_tiered@20": 531.8,
+   "self_hosted_tiered@50": 641.4,
+   "self_hosted_tiered@100": 829.9,
+   "self_hosted@20": 682.9,
+   "self_hosted@50": 1115.6,
+   "self_hosted@100": 1857.6,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -23.6,
+   "self_hosted_tiered@50": -44.1,
+   "self_hosted_tiered@100": -56.8,
+   "self_hosted@20": -24.6,
+   "self_hosted@50": -33.3,
+   "self_hosted@100": -37.5,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     20.5
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     13.6
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     39.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     20.8
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D11a",
+  "label": "EBS 여유 공간 — Elastic 기준(+15%)",
+  "tco": {
+   "self_hosted_tiered@20": 714.5,
+   "self_hosted_tiered@50": 1194.5,
+   "self_hosted_tiered@100": 2015.4,
+   "self_hosted@20": 967.8,
+   "self_hosted@50": 1827.9,
+   "self_hosted@100": 3282.1,
+   "splunk@20": 670.7,
+   "splunk@50": 1440.1,
+   "splunk@100": 2722.4
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 2.7,
+   "self_hosted_tiered@50": 4.0,
+   "self_hosted_tiered@100": 4.8,
+   "self_hosted@20": 6.8,
+   "self_hosted@50": 9.3,
+   "self_hosted@100": 10.4,
+   "splunk@20": 0.1,
+   "splunk@50": 0.1,
+   "splunk@100": 0.1
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     49.8
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     24.5
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     157.7
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "D11b",
+  "label": "EBS 여유 공간 — AWS OpenSearch 산식(÷0.95÷0.8)",
+  "tco": {
+   "self_hosted_tiered@20": 735.0,
+   "self_hosted_tiered@50": 1245.9,
+   "self_hosted_tiered@100": 2118.1,
+   "self_hosted@20": 1036.3,
+   "self_hosted@50": 1999.1,
+   "self_hosted@100": 3624.6,
+   "splunk@20": 671.5,
+   "splunk@50": 1442.2,
+   "splunk@100": 2726.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 5.6,
+   "self_hosted_tiered@50": 8.5,
+   "self_hosted_tiered@100": 10.2,
+   "self_hosted@20": 14.4,
+   "self_hosted@50": 19.5,
+   "self_hosted@100": 22.0,
+   "splunk@20": 0.2,
+   "splunk@50": 0.3,
+   "splunk@100": 0.3
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     61.1
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     27.7
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "managed_siem"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C1",
+  "label": "오픈소스 서버 대수에서 S3분 제외 (S3분 검색 불가 전제)",
+  "tco": {
+   "self_hosted_tiered@20": 661.9,
+   "self_hosted_tiered@50": 983.8,
+   "self_hosted_tiered@100": 1565.5,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -4.9,
+   "self_hosted_tiered@50": -14.3,
+   "self_hosted_tiered@100": -18.6,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     31.4
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     19.5
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     67.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C2a",
+  "label": "15TB/대 유지, 서버를 64GiB r6i.2xlarge($443.84)로",
+  "tco": {
+   "self_hosted_tiered@20": 730.2,
+   "self_hosted_tiered@50": 1224.7,
+   "self_hosted_tiered@100": 2075.8,
+   "self_hosted@20": 940.1,
+   "self_hosted@50": 1749.6,
+   "self_hosted@100": 3125.6,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 4.9,
+   "self_hosted_tiered@50": 6.7,
+   "self_hosted_tiered@100": 8.0,
+   "self_hosted@20": 3.8,
+   "self_hosted@50": 4.6,
+   "self_hosted@100": 5.2,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     57.7
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     26.4
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     190.5
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C2b",
+  "label": "공식 비율(hot 1:30·warm 1:160) — r6i.2xlarge 64GiB, S3분은 대수 제외",
+  "tco": {
+   "self_hosted_tiered@20": 715.6,
+   "self_hosted_tiered@50": 1159.1,
+   "self_hosted_tiered@100": 1900.7,
+   "self_hosted@20": 1049.6,
+   "self_hosted@50": 2019.6,
+   "self_hosted@100": 3629.1,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 2.8,
+   "self_hosted_tiered@50": 1.0,
+   "self_hosted_tiered@100": -1.1,
+   "self_hosted@20": 15.9,
+   "self_hosted@50": 20.7,
+   "self_hosted@100": 22.1,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     43.6
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     23.9
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     116.7
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C2c",
+  "label": "공식 비율(hot 1:30·warm 1:160) — 원 모델 m6i.2xlarge 32GiB 유지, S3분은 대수 제외",
+  "tco": {
+   "self_hosted_tiered@20": 752.5,
+   "self_hosted_tiered@50": 1278.3,
+   "self_hosted_tiered@100": 2149.0,
+   "self_hosted@20": 1172.1,
+   "self_hosted@50": 2330.0,
+   "self_hosted@100": 4269.4,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 8.1,
+   "self_hosted_tiered@50": 11.3,
+   "self_hosted_tiered@100": 11.8,
+   "self_hosted@20": 29.4,
+   "self_hosted@50": 39.3,
+   "self_hosted@100": 43.6,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     65.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     30.8
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "managed_siem"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "S4",
+  "label": "S3분 검색(OpenSearch 검색 노드) — 캐시 20%, 노드당 캐시 10TB, r6i.2xlarge; 대수는 로컬분 기준",
+  "tco": {
+   "self_hosted_tiered@20": 687.7,
+   "self_hosted_tiered@50": 1008.0,
+   "self_hosted_tiered@100": 1599.5,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -1.2,
+   "self_hosted_tiered@50": -12.2,
+   "self_hosted_tiered@100": -16.8,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     33.0
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     21.1
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     72.7
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C3",
+  "label": "오픈소스 전용 서버 — 관리 노드 3(m6i.large)+Wazuh 매니저 1(c6i.2xlarge)+대시보드 1(c6i.xlarge)",
+  "tco": {
+   "self_hosted_tiered@20": 751.7,
+   "self_hosted_tiered@50": 1203.8,
+   "self_hosted_tiered@100": 1978.2,
+   "self_hosted@20": 961.6,
+   "self_hosted@50": 1728.7,
+   "self_hosted@100": 3028.0,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 8.0,
+   "self_hosted_tiered@50": 4.9,
+   "self_hosted_tiered@100": 2.9,
+   "self_hosted@20": 6.2,
+   "self_hosted@50": 3.3,
+   "self_hosted@100": 1.9,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     52.7
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     28.0
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     139.5
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C4",
+  "label": "Splunk 서버 추가 — ES 검색 헤드 1·관리 1(c6i.8xlarge) + 검색 헤드 디스크 300GB",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 856.5,
+   "splunk@50": 1624.8,
+   "splunk@100": 2905.2
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 27.9,
+   "splunk@50": 13.0,
+   "splunk@100": 6.9
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     7.3
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C5",
+  "label": "Splunk 인덱서를 ES 최소 사양 c6i.8xlarge($1121.28)로",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 861.5,
+   "splunk@50": 1629.7,
+   "splunk@100": 2910.1
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 28.6,
+   "splunk@50": 13.3,
+   "splunk@100": 7.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     7.0
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C6a",
+  "label": "EC2 1년 약정(선결제 없음)",
+  "tco": {
+   "self_hosted_tiered@20": 654.7,
+   "self_hosted_tiered@50": 1055.9,
+   "self_hosted_tiered@100": 1738.2,
+   "self_hosted@20": 864.7,
+   "self_hosted@50": 1580.8,
+   "self_hosted@100": 2787.9,
+   "splunk@20": 640.5,
+   "splunk@50": 1408.8,
+   "splunk@100": 2689.2
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -5.9,
+   "self_hosted_tiered@50": -8.0,
+   "self_hosted_tiered@100": -9.6,
+   "self_hosted@20": -4.5,
+   "self_hosted@50": -5.5,
+   "self_hosted@100": -6.2,
+   "splunk@20": -4.4,
+   "splunk@50": -2.0,
+   "splunk@100": -1.1
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     34.8
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     20.8
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     87.0
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     158.9
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "C6b",
+  "label": "EC2 3년 약정(전액 선결제)",
+  "tco": {
+   "self_hosted_tiered@20": 623.7,
+   "self_hosted_tiered@50": 986.5,
+   "self_hosted_tiered@100": 1599.2,
+   "self_hosted@20": 833.6,
+   "self_hosted@50": 1511.3,
+   "self_hosted@100": 2649.0,
+   "splunk@20": 618.4,
+   "splunk@50": 1386.6,
+   "splunk@100": 2667.0
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -10.4,
+   "self_hosted_tiered@50": -14.1,
+   "self_hosted_tiered@100": -16.8,
+   "self_hosted@20": -8.0,
+   "self_hosted@50": -9.7,
+   "self_hosted@100": -10.9,
+   "splunk@20": -7.7,
+   "splunk@50": -3.6,
+   "splunk@100": -1.9
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     30.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     20.5
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     70.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     94.2
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "A1",
+  "label": "가용영역 간 복제 전송료 $0.02/GB",
+  "tco": {
+   "self_hosted_tiered@20": 697.5,
+   "self_hosted_tiered@50": 1152.1,
+   "self_hosted_tiered@100": 1930.6,
+   "self_hosted@20": 907.5,
+   "self_hosted@50": 1677.0,
+   "self_hosted@100": 2980.4,
+   "splunk@20": 669.9,
+   "splunk@50": 1438.2,
+   "splunk@100": 2718.6
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.2,
+   "self_hosted_tiered@50": 0.4,
+   "self_hosted_tiered@100": 0.4,
+   "self_hosted@20": 0.2,
+   "self_hosted@50": 0.2,
+   "self_hosted@100": 0.3,
+   "splunk@20": 0.0,
+   "splunk@50": 0.0,
+   "splunk@100": 0.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     45.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     23.3
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     124.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "A2",
+  "label": "로컬 원본 1벌 스냅샷 백업 $0.05/GB-월",
+  "tco": {
+   "self_hosted_tiered@20": 729.9,
+   "self_hosted_tiered@50": 1233.0,
+   "self_hosted_tiered@100": 2092.3,
+   "self_hosted@20": 1019.1,
+   "self_hosted@50": 1956.1,
+   "self_hosted@100": 3538.5,
+   "splunk@20": 676.0,
+   "splunk@50": 1453.3,
+   "splunk@100": 2748.9
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 4.9,
+   "self_hosted_tiered@50": 7.4,
+   "self_hosted_tiered@100": 8.8,
+   "self_hosted@20": 12.5,
+   "self_hosted@50": 16.9,
+   "self_hosted@100": 19.1,
+   "splunk@20": 0.9,
+   "splunk@50": 1.1,
+   "splunk@100": 1.1
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     58.9
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     25.8
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     199.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "S1",
+  "label": "Splunk 라이선스를 공개 목록가(설치형 1년 약정 + ES 약정, 구간별)로",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 661.5,
+   "splunk@50": 1077.0,
+   "splunk@100": 1622.8
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": -1.3,
+   "splunk@50": -25.1,
+   "splunk@100": -40.3
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "S2",
+  "label": "Splunk 90일 초과 보관 가산 적용 (Cloud 전용이라 설치형에는 부적용이 맞음 — 참고)",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 784.3,
+   "splunk@50": 1724.2,
+   "splunk@100": 3290.7
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 17.1,
+   "splunk@50": 19.9,
+   "splunk@100": 21.0
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     15.2
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [
+     42.0
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "L1a",
+  "label": "Splunk 관리자 0.25명 (오픈소스 클러스터 운영과 같게)",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 815.5,
+   "splunk@50": 1583.8,
+   "splunk@100": 2864.2
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 21.7,
+   "splunk@50": 10.1,
+   "splunk@100": 5.4
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     10.2
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "L1b",
+  "label": "Splunk 관리자 1.5명 (Splunk Lantern: 기본 1명 + 인덱서 클러스터 0.5명)",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 1543.5,
+   "splunk@50": 2311.7,
+   "splunk@100": 3592.1
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 130.4,
+   "splunk@50": 60.7,
+   "splunk@100": 32.1
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted_tiered",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "L2a",
+  "label": "Splunk 구축 — PS 구축 패키지 Base $62,900",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 756.1,
+   "splunk@50": 1524.3,
+   "splunk@100": 2804.7
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 12.9,
+   "splunk@50": 6.0,
+   "splunk@100": 3.2
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     15.2
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "L2b",
+  "label": "Splunk 구축 — PS 구축 패키지 Standard $151,000",
+  "tco": {
+   "self_hosted_tiered@20": 695.9,
+   "self_hosted_tiered@50": 1148.0,
+   "self_hosted_tiered@100": 1922.4,
+   "self_hosted@20": 905.8,
+   "self_hosted@50": 1672.9,
+   "self_hosted@100": 2972.2,
+   "splunk@20": 876.8,
+   "splunk@50": 1645.0,
+   "splunk@100": 2925.4
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 0.0,
+   "self_hosted_tiered@50": 0.0,
+   "self_hosted_tiered@100": 0.0,
+   "self_hosted@20": 0.0,
+   "self_hosted@50": 0.0,
+   "self_hosted@100": 0.0,
+   "splunk@20": 30.9,
+   "splunk@50": 14.4,
+   "splunk@100": 7.6
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     44.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     6.1
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     123.3
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "L5",
+  "label": "인건비 단가를 2026년 적용 공표로 (IT컨설턴트 월 10,707,960원 × 12)",
+  "tco": {
+   "self_hosted_tiered@20": 734.5,
+   "self_hosted_tiered@50": 1186.6,
+   "self_hosted_tiered@100": 1961.0,
+   "self_hosted@20": 944.4,
+   "self_hosted@50": 1711.5,
+   "self_hosted@100": 3010.7,
+   "splunk@20": 677.4,
+   "splunk@50": 1445.7,
+   "splunk@100": 2726.1
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": 5.5,
+   "self_hosted_tiered@50": 3.4,
+   "self_hosted_tiered@100": 2.0,
+   "self_hosted@20": 4.3,
+   "self_hosted@50": 2.3,
+   "self_hosted@100": 1.3,
+   "splunk@20": 1.1,
+   "splunk@50": 0.5,
+   "splunk@100": 0.3
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     48.6
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     25.2
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     137.7
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {
+   "security_consultant_annual": 128495520
+  }
+ },
+ {
+  "id": "LAB1",
+  "label": "인건비 시나리오 — 운영 인건비 제외",
+  "tco": {
+   "self_hosted_tiered@20": 477.5,
+   "self_hosted_tiered@50": 929.7,
+   "self_hosted_tiered@100": 1704.0,
+   "self_hosted@20": 687.5,
+   "self_hosted@50": 1454.5,
+   "self_hosted@100": 2753.8,
+   "splunk@20": 597.1,
+   "splunk@50": 1365.4,
+   "splunk@100": 2645.8
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -31.4,
+   "self_hosted_tiered@50": -19.0,
+   "self_hosted_tiered@100": -11.4,
+   "self_hosted@20": -24.1,
+   "self_hosted@50": -13.1,
+   "self_hosted@100": -7.3,
+   "splunk@20": -10.9,
+   "splunk@50": -5.1,
+   "splunk@100": -2.7
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     24.2
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [
+     10.2
+    ],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     79.5
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "splunk",
+    "cheaper_at_max": "splunk"
+   }
+  },
+  "ledger_overrides": {}
+ },
+ {
+  "id": "LAB2",
+  "label": "인건비 시나리오 — 인건비 전부 제외",
+  "tco": {
+   "self_hosted_tiered@20": 322.2,
+   "self_hosted_tiered@50": 774.4,
+   "self_hosted_tiered@100": 1548.7,
+   "self_hosted@20": 532.2,
+   "self_hosted@50": 1299.2,
+   "self_hosted@100": 2598.5,
+   "splunk@20": 597.1,
+   "splunk@50": 1365.4,
+   "splunk@100": 2645.8
+  },
+  "delta_pct": {
+   "self_hosted_tiered@20": -53.7,
+   "self_hosted_tiered@50": -32.5,
+   "self_hosted_tiered@100": -19.4,
+   "self_hosted@20": -41.3,
+   "self_hosted@50": -22.3,
+   "self_hosted@100": -12.6,
+   "splunk@20": -10.9,
+   "splunk@50": -5.1,
+   "splunk@100": -2.7
+  },
+  "breakeven": {
+   "tiered_vs_managed_5y": {
+    "crossings": [
+     7.0
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted_tiered",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "tiered_vs_managed_3y": {
+    "crossings": [
+     11.4
+    ],
+    "cheaper_at_min": "managed_siem",
+    "cheaper_at_max": "self_hosted_tiered"
+   },
+   "local_vs_splunk_5y": {
+    "crossings": [],
+    "cheaper_at_min": "self_hosted",
+    "cheaper_at_max": "self_hosted"
+   }
+  },
+  "ledger_overrides": {}
+ }
+]

@@ -1,0 +1,54 @@
+{
+ "discount_threshold_A": {
+  "20": 95.5,
+  "50": 52.7,
+  "100": 21.0,
+  "150": 13.4
+ },
+ "discount_threshold_B_unfav": {
+  "20": 86.1,
+  "50": 39.6,
+  "100": 4.4,
+  "150": 0.0
+ },
+ "cloud_reference_5y": {
+  "50": {
+   "uncompressed": 1852.7,
+   "compressed": 1638.1
+  },
+  "100": {
+   "uncompressed": 2936.3,
+   "compressed": 2507.2
+  }
+ },
+ "l2": {
+  "원 모델": {
+   "aws_disk_5y_tiered_50gb": 508.1,
+   "tiered_y5_local_tb": 61.5,
+   "tiered_y5_object_tb": 143.5,
+   "local_y5_tb_no_tiering": 205.0,
+   "local_y5_tb_with_free_space": 205.0
+  },
+  "검증 A": {
+   "aws_disk_5y_tiered_50gb": 493.1,
+   "tiered_y5_local_tb": 61.5,
+   "tiered_y5_object_tb": 61.5,
+   "local_y5_tb_no_tiering": 184.5,
+   "local_y5_tb_with_free_space": 212.1
+  },
+  "검증 B-유리": {
+   "aws_disk_5y_tiered_50gb": 272.5,
+   "tiered_y5_local_tb": 49.2,
+   "tiered_y5_object_tb": 49.2,
+   "local_y5_tb_no_tiering": 147.6,
+   "local_y5_tb_with_free_space": 169.7
+  },
+  "검증 B-불리": {
+   "aws_disk_5y_tiered_50gb": 544.5,
+   "tiered_y5_local_tb": 61.5,
+   "tiered_y5_object_tb": 61.5,
+   "local_y5_tb_no_tiering": 184.5,
+   "local_y5_tb_with_free_space": 242.7
+  }
+ }
+}
