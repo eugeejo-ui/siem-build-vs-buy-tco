@@ -1,0 +1,313 @@
+{
+  "s3": {
+    "version": "20260911124507",
+    "published": "2026-09-11T12:45:07Z",
+    "standard_tiers": [
+      {
+        "storageClass": "General Purpose",
+        "volumeType": "Standard",
+        "usagetype": "APN2-TimedStorage-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": 51200.0,
+        "usd_per_gb_month": 0.025,
+        "description": "$0.025 per GB - first 50 TB / month of storage used"
+      },
+      {
+        "storageClass": "General Purpose",
+        "volumeType": "Standard",
+        "usagetype": "APN2-TimedStorage-ByteHrs",
+        "begin_gb": 51200.0,
+        "end_gb": 512000.0,
+        "usd_per_gb_month": 0.024,
+        "description": "$0.024 per GB - next 450 TB / month of storage used"
+      },
+      {
+        "storageClass": "General Purpose",
+        "volumeType": "Standard",
+        "usagetype": "APN2-TimedStorage-ByteHrs",
+        "begin_gb": 512000.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.023,
+        "description": "$0.023 per GB - storage used / month over 500 TB"
+      }
+    ],
+    "all_storage_rows": [
+      {
+        "storageClass": "Archive",
+        "volumeType": "Amazon Glacier",
+        "usagetype": "APN2-TimedStorage-GlacierByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.0045,
+        "description": "$0.0045 per GB / month of storage used - Amazon Glacier"
+      },
+      {
+        "storageClass": "Archive",
+        "volumeType": "Amazon Glacier Staging",
+        "usagetype": "APN2-TimedStorage-GlacierStaging",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.023,
+        "description": "$0.023 per GB-Month of storage used in GlacierStagingStorage"
+      },
+      {
+        "storageClass": "General Purpose",
+        "volumeType": "Annotations",
+        "usagetype": "APN2-Annotation-TimedStorage-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.025,
+        "description": "$0.025 per GB-Mo of Storage in Annotations "
+      },
+      {
+        "storageClass": "Files",
+        "volumeType": "Files",
+        "usagetype": "APN2-Files-TimedStorage-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.33,
+        "description": "$0.33 per GB-Mo of Storage in Files "
+      },
+      {
+        "storageClass": "Archive",
+        "volumeType": "Glacier Deep Archive",
+        "usagetype": "APN2-TimedStorage-GDA-Staging",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.023,
+        "description": "$0.023 per GB-Month of storage used in GlacierStagingStorage"
+      },
+      {
+        "storageClass": "Archive Instant Retrieval",
+        "volumeType": "Glacier Instant Retrieval",
+        "usagetype": "APN2-TimedStorage-GIR-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.005,
+        "description": "$0.005 per GB-Month of storage used in Glacier Instant Retrieval"
+      },
+      {
+        "storageClass": "Intelligent-Tiering",
+        "volumeType": "Intelligent-Tiering Archive Instant Access",
+        "usagetype": "APN2-TimedStorage-INT-AIA-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.005,
+        "description": "$0.005 per GB-Month of storage used in Intelligent-Tiering, Archive Instant Access tier"
+      },
+      {
+        "storageClass": "Intelligent-Tiering",
+        "volumeType": "Intelligent-Tiering Frequent Access",
+        "usagetype": "APN2-TimedStorage-INT-FA-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": 51200.0,
+        "usd_per_gb_month": 0.025,
+        "description": "$0.025 per GB - first 50 TB / month of storage used in Intelligent-Tiering, Frequent Access Tier"
+      },
+      {
+        "storageClass": "Intelligent-Tiering",
+        "volumeType": "Intelligent-Tiering Frequent Access",
+        "usagetype": "APN2-TimedStorage-INT-FA-ByteHrs",
+        "begin_gb": 51200.0,
+        "end_gb": 512000.0,
+        "usd_per_gb_month": 0.024,
+        "description": "$0.024 per GB - next 450 TB / month of storage used in Intelligent-Tiering, Frequent Access Tier"
+      },
+      {
+        "storageClass": "Intelligent-Tiering",
+        "volumeType": "Intelligent-Tiering Frequent Access",
+        "usagetype": "APN2-TimedStorage-INT-FA-ByteHrs",
+        "begin_gb": 512000.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.023,
+        "description": "$0.023 per GB - over 500 TB / month of storage used in Intelligent-Tiering, Frequent Access Tier"
+      },
+      {
+        "storageClass": "Intelligent-Tiering",
+        "volumeType": "Intelligent-Tiering Infrequent Access",
+        "usagetype": "APN2-TimedStorage-INT-IA-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.0138,
+        "description": "$0.0138 per GB-Month of storage used in Intelligent-Tiering, Infrequent Access Tier"
+      },
+      {
+        "storageClass": "Intelligent-Tiering",
+        "volumeType": "IntelligentTieringArchiveAccess",
+        "usagetype": "APN2-TimedStorage-INT-AA-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.0045,
+        "description": "$0.0045 per Gigabyte Month for TimedStorage-INT-AA-ByteHrs:IntelligentTieringAAStorage in Asia Pacific (Seoul)"
+      },
+      {
+        "storageClass": "Intelligent-Tiering",
+        "volumeType": "IntelligentTieringDeepArchiveAccess",
+        "usagetype": "APN2-TimedStorage-INT-DAA-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.002,
+        "description": "$0.002 per Gigabyte Month for TimedStorage-INT-DAA-ByteHrs:IntelligentTieringDAAStorage in Asia Pacific (Seoul)"
+      },
+      {
+        "storageClass": "Infrequent Access",
+        "volumeType": "One Zone - Infrequent Access",
+        "usagetype": "APN2-TimedStorage-ZIA-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.011,
+        "description": "$0.011 per GB-Month of storage used in One Zone-Infrequent Access"
+      },
+      {
+        "storageClass": "Non-Critical Data",
+        "volumeType": "Reduced Redundancy",
+        "usagetype": "APN2-TimedStorage-RRS-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": 1024.0,
+        "usd_per_gb_month": 0.0251,
+        "description": "$0.0251 per GB - first 1 TB / month of storage used - Reduced Redundancy Storage"
+      },
+      {
+        "storageClass": "Non-Critical Data",
+        "volumeType": "Reduced Redundancy",
+        "usagetype": "APN2-TimedStorage-RRS-ByteHrs",
+        "begin_gb": 1024.0,
+        "end_gb": 51200.0,
+        "usd_per_gb_month": 0.0246,
+        "description": "$0.0246 per GB - next 49 TB / month of storage used - Reduced Redundancy Storage"
+      },
+      {
+        "storageClass": "Non-Critical Data",
+        "volumeType": "Reduced Redundancy",
+        "usagetype": "APN2-TimedStorage-RRS-ByteHrs",
+        "begin_gb": 51200.0,
+        "end_gb": 512000.0,
+        "usd_per_gb_month": 0.0242,
+        "description": "$0.0242 per GB - next 450 TB / month of storage used - Reduced Redundancy Storage"
+      },
+      {
+        "storageClass": "Non-Critical Data",
+        "volumeType": "Reduced Redundancy",
+        "usagetype": "APN2-TimedStorage-RRS-ByteHrs",
+        "begin_gb": 512000.0,
+        "end_gb": 1024000.0,
+        "usd_per_gb_month": 0.0238,
+        "description": "$0.0238 per GB - next 500 TB / month of storage used - Reduced Redundancy Storage"
+      },
+      {
+        "storageClass": "Non-Critical Data",
+        "volumeType": "Reduced Redundancy",
+        "usagetype": "APN2-TimedStorage-RRS-ByteHrs",
+        "begin_gb": 1024000.0,
+        "end_gb": 5120000.0,
+        "usd_per_gb_month": 0.0234,
+        "description": "$0.0234 per GB - next 4000 TB / month of storage used - Reduced Redundancy Storage"
+      },
+      {
+        "storageClass": "Non-Critical Data",
+        "volumeType": "Reduced Redundancy",
+        "usagetype": "APN2-TimedStorage-RRS-ByteHrs",
+        "begin_gb": 5120000.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.023,
+        "description": "$0.023 per GB - storage used / month over 5000 TB - Reduced Redundancy Storage"
+      },
+      {
+        "storageClass": "General Purpose",
+        "volumeType": "Standard",
+        "usagetype": "APN2-TimedStorage-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": 51200.0,
+        "usd_per_gb_month": 0.025,
+        "description": "$0.025 per GB - first 50 TB / month of storage used"
+      },
+      {
+        "storageClass": "General Purpose",
+        "volumeType": "Standard",
+        "usagetype": "APN2-TimedStorage-ByteHrs",
+        "begin_gb": 51200.0,
+        "end_gb": 512000.0,
+        "usd_per_gb_month": 0.024,
+        "description": "$0.024 per GB - next 450 TB / month of storage used"
+      },
+      {
+        "storageClass": "General Purpose",
+        "volumeType": "Standard",
+        "usagetype": "APN2-TimedStorage-ByteHrs",
+        "begin_gb": 512000.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.023,
+        "description": "$0.023 per GB - storage used / month over 500 TB"
+      },
+      {
+        "storageClass": "Infrequent Access",
+        "volumeType": "Standard - Infrequent Access",
+        "usagetype": "APN2-TimedStorage-SIA-ByteHrs",
+        "begin_gb": 0.0,
+        "end_gb": null,
+        "usd_per_gb_month": 0.0138,
+        "description": "$0.0138 per GB-Month of storage used in Standard-Infrequent Access"
+      }
+    ]
+  },
+  "ebs": {
+    "version": "20260910195514",
+    "published": "2026-09-10T19:55:14Z",
+    "rows_scanned": 260770,
+    "volumes": {
+      "sc1": {
+        "volume": "sc1",
+        "usd_per_gb_month": 0.0174,
+        "currency": "USD",
+        "usagetype": "APN2-EBS:VolumeUsage.sc1",
+        "description": "$0.0174 per GB-month of Cold HDD (sc1) provisioned storage - Asia Pacific (Seoul)"
+      },
+      "st1": {
+        "volume": "st1",
+        "usd_per_gb_month": 0.051,
+        "currency": "USD",
+        "usagetype": "APN2-EBS:VolumeUsage.st1",
+        "description": "$0.051 per GB-month of Throughput Optimized HDD (st1) provisioned storage - Asia Pacific (Seoul)"
+      },
+      "gp3": {
+        "volume": "gp3",
+        "usd_per_gb_month": 0.0912,
+        "currency": "USD",
+        "usagetype": "APN2-EBS:VolumeUsage.gp3",
+        "description": "$0.0912 per GB-month of General Purpose (gp3) provisioned storage - Asia Pacific (Seoul)"
+      }
+    }
+  },
+  "ledger_crosscheck": [
+    {
+      "item": "ssd_price.base (gp3)",
+      "ledger": 0.0912,
+      "official": 0.0912,
+      "match": true
+    },
+    {
+      "item": "ssd_price.high (io2)",
+      "ledger": 0.1278,
+      "official": null,
+      "match": false
+    },
+    {
+      "item": "hdd_price.base (sc1)",
+      "ledger": 0.0174,
+      "official": 0.0174,
+      "match": true
+    },
+    {
+      "item": "hdd_price.high (st1)",
+      "ledger": 0.051,
+      "official": 0.051,
+      "match": true
+    },
+    {
+      "item": "object_price.base (S3 Standard 첫 구간)",
+      "ledger": 0.025,
+      "official": 0.025,
+      "match": true
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "source": "조달청 나라장터쇼핑몰 품목정보 서비스 getShoppingMallPrdctInfoList",
+  "pumyeong": [
+    "하드디스크드라이브"
+  ],
+  "windows": [
+    [
+      "20260101",
+      "20260630"
+    ]
+  ],
+  "rows_total": 911,
+  "parsed": 911,
+  "parse_rate": 1.0,
+  "parse_fail_reasons": {},
+  "unique_after_dedupe": 354,
+  "vendors_top": [
+    [
+      "Seagate",
+      131
+    ],
+    [
+      "IBM",
+      45
+    ],
+    [
+      "Western digital",
+      34
+    ],
+    [
+      "Western Digital",
+      33
+    ],
+    [
+      "Hitachi",
+      28
+    ],
+    [
+      "Dell",
+      21
+    ],
+    [
+      "Infortrend",
+      17
+    ],
+    [
+      "Lenovo",
+      8
+    ],
+    [
+      "Toshiba",
+      8
+    ],
+    [
+      "Fujitsu",
+      6
+    ],
+    [
+      "(주) 다민정보산업",
+      6
+    ],
+    [
+      "Segate",
+      5
+    ]
+  ],
+  "bands": {
+    "~10": {
+      "n": 137,
+      "min": 28500.0,
+      "median": 117250.0,
+      "max": 700750.0
+    },
+    "10~50": {
+      "n": 217,
+      "min": 53400.0,
+      "median": 213714.2857142857,
+      "max": 585260.0
+    },
+    "50~100": {
+      "n": 0,
+      "min": null,
+      "median": null,
+      "max": null
+    },
+    "100~500": {
+      "n": 0,
+      "min": null,
+      "median": null,
+      "max": null
+    },
+    "500~": {
+      "n": 0,
+      "min": null,
+      "median": null,
+      "max": null
+    }
+  },
+  "api_calls": 10
+}
