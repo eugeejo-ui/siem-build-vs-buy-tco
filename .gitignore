@@ -5,3 +5,16 @@ venv/
 .env
 .ipynb_checkpoints/
 Thumbs.db
+
+# --- 비밀값 차단 (2026-09-16 추가) ---
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+**/secrets/
+# API 원본 응답: 요청 URL에 인증키가 섞여 들어갈 수 있으므로 통째로 제외
+linkedin/**/raw/
+
+# 원 프로젝트 검증 — API 원본 응답
+model_audit/**/raw/
